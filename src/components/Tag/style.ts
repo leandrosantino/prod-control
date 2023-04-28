@@ -1,3 +1,8 @@
+import styled from "styled-components";
+
+
+export const Container = styled.div`
+
 .container {
   width: 190mm;
   height: 277mm;
@@ -193,3 +198,6 @@
 .footer span {
   font-weight: 600;
 }
+
+
+`

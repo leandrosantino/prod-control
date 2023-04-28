@@ -1,11 +1,19 @@
 import fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
+import fastifyView from '@fastify/view'
+import ejs from 'ejs'
 import cors from '@fastify/cors'
+import fs from 'fs'
 import { createId as cuid } from '@paralleldrive/cuid2'
 import path from 'path'
 import { z } from 'zod'
 
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient();
+
 const server = fastify();
+
+let address: string
 
 server.register(cors, {
   origin: '*',
@@ -13,6 +21,12 @@ server.register(cors, {
 
 server.register(fastifyStatic, {
   root: path.join(__dirname, '../build')
+})
+
+server.register(fastifyView, {
+  engine: { ejs },
+  root: path.join(__dirname, '../public/views')
+  //root: path.join(__dirname, './views')
 })
 
 server.get('/', async (request, reply) => {
@@ -41,33 +55,80 @@ server.get('/tags/getids/:amount', async (request, reply) => {
 
 server.get('/products', async (request, reply) => {
   try {
+    return await prisma.product.findMany()
+  } catch (error) {
+    throw error
+  }
+})
 
-    const products = [
-      {
-        id: cuid(),
-        description: 'CONJUNTO CINTA E FECHADURA 226',
-        partNumber: '520567640',
-        sapCode: '2230212003.01',
-        projectNumber: 226,
-        amount: 16
-      },
-      {
-        id: cuid(),
-        description: 'ISOLAMENTO DO PARALAMA ESQ 521',
-        partNumber: '519547723',
-        sapCode: '2230403002.01',
-        projectNumber: 521,
-        amount: 16
-      },
-    ]
+server.get('/gethost', async () => {
+  try {
+    return address
+  } catch (error) {
+    throw error
+  }
+})
 
-    return products
+server.get('/reg', async (request, reply) => {
+  try {
+    const { item, tag } = z.object({
+      item: z.string(),
+      tag: z.string()
+    }).parse(request.query)
+
+    const product = await prisma.product.findUnique({
+      where: { id: item }
+    })
+
+    if (product?.id) {
+      try {
+        await prisma.productionRecord.create({
+          data: {
+            id: tag,
+            productId: product?.id
+          }
+        })
+        return reply.view('info.ejs', {
+          id: tag,
+          product,
+          success: true,
+          msg: 'Registrado com Sucesso!'
+        })
+      } catch {
+        return reply.view('info.ejs', {
+          id: tag,
+          product,
+          success: false,
+          msg: 'Esta etiqueta já foi registrada!'
+        })
+      }
+    }
+
+    return reply.view('info.ejs', {
+      id: tag,
+      product,
+      success: false,
+      msg: 'Id do produto inválido!'
+    })
 
   } catch (error) {
     throw error
   }
 })
 
-server.listen({ port: 3333 }, () => {
+
+
+
+server.listen({ port: 3333, host: '0.0.0.0' }, () => {
+
+  try {
+    const filePath = path.join(__dirname, '../public/address.txt')
+    // const filePath = path.join(__dirname, './address.txt')
+    address = fs.readFileSync(filePath, 'utf8');
+    console.log(address)
+  } catch {
+    console.log('Erro in read address')
+  }
+
   console.log('server started!')
 })

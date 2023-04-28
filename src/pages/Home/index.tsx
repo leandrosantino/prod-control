@@ -10,13 +10,18 @@ export default function Home() {
   const [idList, setIdList] = useState<string[]>()
   const [productId, setProductId] = useState<number>(1)
   const [products, setProducts] = useState<Product[]>([])
+  const [host, setHost] = useState<string>('')
 
   useEffect(() => {
     (async () => {
       try {
 
         const apiResponse = await api.get(`/products`)
+        console.log(apiResponse.data)
         setProducts(z.array(productSchema).parse(apiResponse.data))
+
+        const hostResponse = await api.get('/gethost')
+        setHost(z.string().parse(hostResponse.data))
 
       } catch (error) {
         console.log(error)
@@ -72,10 +77,7 @@ export default function Home() {
           Imprimir
         </button>
 
-
-
       </Header>
-
 
       {
         idList?.map((id) => (
@@ -83,6 +85,7 @@ export default function Home() {
             key={id}
             id={id}
             product={products[productId]}
+            host={host}
           />
         ))
       }

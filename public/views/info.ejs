@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      outline: 0;
+      box-sizing: border-box;
+      font-family: Arial;
+    }
+
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 100px;
+      gap: 12px;
+    }
+
+    header {
+      width: 100%;
+      height: 72px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      background-color: #4a4a4a;
+      color: #fff;
+      font-size: 26px;
+      font-weight: 600;
+    }
+
+    .success {
+      background-color: #4ea342;
+    }
+
+    .error {
+      background-color: #cc4141;
+    }
+
+    .title {
+      width: 80%;
+      padding: 12px;
+      text-align: center;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .valueContainer {
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .valueContent {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>Adler Pelzer Group</header>
+
+  <div class="container">
+
+    <div class=" title <%if(success===true){%>success<%}else{%>error<%}%>">
+      <%- msg %>
+    </div>
+
+    <div class="valueContainer">
+
+      <div class="valueContent">
+        <label>Identificação da Etiqueta:</label>
+        <div class="value"><%- id %></div>
+      </div>
+
+      <div class="valueContent">
+        <label>Produto:</label>
+        <div class="value"><%- product.description %></div>
+      </div>
+
+      <div class="valueContent">
+        <label>Código JEEP:</label>
+        <div class="value"><%- product.partNumber %></div>
+      </div>
+
+      <div class="valueContent">
+        <label>Código Adler:</label>
+        <div class="value"><%- product.sapCode %></div>
+      </div>
+
+      <div class="valueContent">
+        <label>Quantidade:</label>
+        <div class="value"><%- product.amount %></div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+</body>
+
+</html>
