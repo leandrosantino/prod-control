@@ -9,11 +9,11 @@
     "react.build": "react-scripts build",
     "react.test": "react-scripts test",
     "react.eject": "react-scripts eject",
-    "dist": "npm run serveprod && npm run server.build &&",
+    "dist": "npm run react.build && npm run server.build",
     "prod": "node build/index",
     "db.seed": "tsx prisma/seed",
     "db.migrate": "npx prisma migrate dev",
-    "serveprod": "npm run react.build && http-server --proxy http://localhost:3333? ./build"
+    "db.studio": "npx prisma studio"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -7,8 +7,67 @@ import fs from 'fs'
 import { createId as cuid } from '@paralleldrive/cuid2'
 import path from 'path'
 import { z } from 'zod'
-import { prisma } from './pirsma'
-import { csvWriter } from './csvWriter'
+
+import { PrismaClient } from '../database/client'
+
+import { createObjectCsvWriter } from 'csv-writer'
+
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: `file:${path.join(__dirname, '../database/dev.db')}`
+    }
+  }
+});
+
+async function csvWriter() {
+
+  try {
+
+    const data = await prisma.productionRecord.findMany({
+      include: {
+        product: true
+      }
+    })
+
+    const records = data.map((record) => {
+      return {
+        id: record.id,
+        data: new Date(record.createdAt).toLocaleDateString(),
+        time: new Date(record.createdAt).toLocaleTimeString(),
+        description: record.product.description,
+        partNumber: record.product.partNumber,
+        sapCode: record.product.sapCode,
+        projectNumber: record.product.projectNumber,
+        amount: record.product.amount
+      }
+    })
+
+    console.log(records)
+
+    const csvWriter = createObjectCsvWriter({
+      path: path.join(__dirname, '../report.csv'),
+      header: [
+        { id: 'id', title: 'Identificação da Etiqueta' },
+        { id: 'data', title: 'Data' },
+        { id: 'time', title: 'Hora' },
+        { id: 'description', title: 'Descrição do Porduto' },
+        { id: 'partNumber', title: 'Part Number' },
+        { id: 'sapCode', title: 'Código Sap' },
+        { id: 'projectNumber', title: 'Projeto' },
+        { id: 'amount', title: 'Quant.' },
+      ],
+      fieldDelimiter: ';',
+      encoding: 'utf8'
+    });
+
+    await csvWriter.writeRecords(records)
+
+  } catch (error) {
+    throw error
+  }
+}
+
 
 
 const server = fastify();
@@ -25,8 +84,8 @@ server.register(fastifyStatic, {
 
 server.register(fastifyView, {
   engine: { ejs },
-  root: path.join(__dirname, '../public/views')
-  //root: path.join(__dirname, './views')
+  // root: path.join(__dirname, '../public/views')
+  root: path.join(__dirname, './views')
 })
 
 server.get('/', async (request, reply) => {
@@ -88,30 +147,15 @@ server.get('/reg', async (request, reply) => {
             productId: product?.id
           }
         })
-        return reply.view('info.ejs', {
-          id: tag,
-          product,
-          success: true,
-          msg: 'Registrado com Sucesso!'
-        })
+        return { success: true, msg: 'Registrado com Sucesso!' }
       } catch {
-        return reply.view('info.ejs', {
-          id: tag,
-          product,
-          success: false,
-          msg: 'Esta etiqueta já foi registrada!'
-        })
+        return { success: false, msg: 'Esta etiqueta Já foi Registrada!' }
       }
     }
 
-    return reply.view('info.ejs', {
-      id: tag,
-      product,
-      success: false,
-      msg: 'Id do produto inválido!'
-    })
-
+    return { success: false, msg: 'Este produdo ainda não foi cadastrado!' }
   } catch (error) {
+    console.log(error)
     throw error
   }
 })
@@ -137,8 +181,8 @@ server.get('/report/generate', async (request, reply) => {
 server.listen({ port: 3333, host: '0.0.0.0' }, () => {
 
   try {
-    const filePath = path.join(__dirname, '../public/address.txt')
-    // const filePath = path.join(__dirname, './address.txt')
+    // const filePath = path.join(__dirname, '../public/address.txt')
+    const filePath = path.join(__dirname, './address.txt')
     address = fs.readFileSync(filePath, 'utf8');
     console.log(address)
   } catch {

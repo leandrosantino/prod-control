@@ -9,6 +9,8 @@ interface Props {
   host: string;
 }
 
+//`http://${host}:3333/reg?item=${product.id}&tag=${id}`
+
 export default function Tag({ id, product, host }: Props) {
 
   const qrcode = (
@@ -18,7 +20,10 @@ export default function Tag({ id, product, host }: Props) {
           <></> :
           < QRCodeCanvas
             id="qrCode"
-            value={`http://${host}:3333/reg?item=${product.id}&tag=${id}`}
+            value={JSON.stringify({
+              productId: product?.id,
+              tagId: id
+            })}
             size={240}
             fgColor='#002060'
             bgColor={"#fff "} level={"H"}
@@ -40,29 +45,29 @@ export default function Tag({ id, product, host }: Props) {
           <div className='label' >DESCRIÇÃO:</div>
 
           <div className='description'>
-            {product.description}
+            {product?.description}
           </div>
 
           <section className='dataContent' >
             <div className='frame' >
               <div className='label' >CODIGO JEEP:</div>
               <div className='codeContent'>
-                {product.partNumber}
+                {product?.partNumber}
               </div>
 
               <div className='label' >CODIGO ADLER:</div>
               <div className='codeContent'>
-                {product.sapCode}
+                {product?.sapCode}
               </div>
 
               <div className='label' >QUANTIDADE:</div>
               <div className='infoContent'>
-                {product.amount}
+                {product?.amount}
               </div>
 
               <div className='label' >MODELO:</div>
               <div className='infoContent' style={{ padding: 14 }} >
-                {product.projectNumber}
+                {product?.projectNumber}
               </div>
             </div>
 
@@ -92,7 +97,7 @@ export default function Tag({ id, product, host }: Props) {
           </section>
 
           <div className="footer">
-            <span>ID:</span> {id.toUpperCase()}
+            <span>ID:</span> {id?.toUpperCase()}
           </div>
 
         </div>
@@ -111,29 +116,29 @@ export default function Tag({ id, product, host }: Props) {
           <div className='description'
             style={{ backgroundColor: '#002060' }}
           >
-            {product.description}
+            {product?.description}
           </div>
 
           <section className='dataContent' style={{ gap: 0 }} >
             <div className='frame' >
               <div className='label' >CODIGO JEEP:</div>
               <div className='codeContent2 colorBlue'>
-                {product.partNumber}
+                {product?.partNumber}
               </div>
 
               <div className='label' >CODIGO ADLER:</div>
               <div className='codeContent2 colorBlue'>
-                {product.sapCode}
+                {product?.sapCode}
               </div>
 
               <div className='label' >QUANTIDADE:</div>
               <div className='infoContent2 colorBlue'>
-                {product.amount}
+                {product?.amount}
               </div>
 
               <div className='label' >MODELO:</div>
               <div className='infoContent2 colorBlue' style={{ padding: 14 }} >
-                {product.projectNumber}
+                {product?.projectNumber}
               </div>
             </div>
 
@@ -146,7 +151,7 @@ export default function Tag({ id, product, host }: Props) {
           </section>
 
           <div className="footer">
-            <span>ID:</span> {id.toUpperCase()}
+            <span>ID:</span> {id?.toUpperCase()}
           </div>
 
         </div>

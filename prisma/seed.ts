@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../database/client'
 import AutoDetectDecoderStream from 'autodetect-decoder-stream'
 import CsvReadableStream from 'csv-reader'
 import fs from 'fs'

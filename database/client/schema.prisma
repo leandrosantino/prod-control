@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../database/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id               String             @id @default(cuid())
+  description      String
+  partNumber       String             @unique
+  sapCode          String
+  projectNumber    String
+  amount           Int
+  ProductionRecord ProductionRecord[]
+}
+
+model ProductionRecord {
+  id        String   @id
+  createdAt DateTime @default(now())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+}
