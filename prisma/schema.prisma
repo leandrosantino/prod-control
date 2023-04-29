@@ -15,7 +15,7 @@ model Product {
   description      String
   partNumber       String             @unique
   sapCode          String
-  projectNumber    Int
+  projectNumber    String
   amount           Int
   ProductionRecord ProductionRecord[]
 }

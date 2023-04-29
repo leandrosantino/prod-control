@@ -7,9 +7,9 @@ import fs from 'fs'
 import { createId as cuid } from '@paralleldrive/cuid2'
 import path from 'path'
 import { z } from 'zod'
+import { prisma } from './pirsma'
+import { csvWriter } from './csvWriter'
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient();
 
 const server = fastify();
 
@@ -117,7 +117,22 @@ server.get('/reg', async (request, reply) => {
 })
 
 
+server.get('/report', async (request, reply) => {
+  try {
+    return reply.view('report.ejs', { msg: '' })
+  } catch (error) {
+    throw error
+  }
+})
 
+server.get('/report/generate', async (request, reply) => {
+  try {
+    await csvWriter()
+    return { msg: `Relatorio gerado com sucesso! - ${new Date().toLocaleString()}` }
+  } catch (error) {
+    return { msg: `Erro ao gerar relatório! - ${new Date().toLocaleString()}` }
+  }
+})
 
 server.listen({ port: 3333, host: '0.0.0.0' }, () => {
 

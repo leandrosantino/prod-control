@@ -9,7 +9,7 @@ export const productSchema = z.object({
   description: z.string(),
   partNumber: z.string(),
   sapCode: z.string(),
-  projectNumber: z.number(),
+  projectNumber: z.string(),
   amount: z.number()
 })
 

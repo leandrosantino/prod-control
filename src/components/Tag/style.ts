@@ -1,18 +1,21 @@
 import styled from "styled-components";
 
 
-export const Container = styled.div`
-
-.container {
+export const Content = styled.div`
   width: 190mm;
   height: 277mm;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  /* border: 1px solid #000; */
   margin-top: 80px;
-}
+
+  @media print {
+    margin-top: 0;
+  }
+`
+
+export const Container = styled.div`
 
 .fristTag,
 .secondTag {
@@ -24,16 +27,6 @@ export const Container = styled.div`
   border-bottom: 2px dashed #000;
 
   margin: 12px
-}
-
-.container+div {
-  margin-top: 0;
-}
-
-@media print {
-  .container {
-    margin-top: 0;
-  }
 }
 
 .colorBlue {

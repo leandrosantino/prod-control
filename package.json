@@ -9,8 +9,11 @@
     "react.build": "react-scripts build",
     "react.test": "react-scripts test",
     "react.eject": "react-scripts eject",
-    "dist": "npm run react.build && npm run server.build",
-    "prod": "node build/index"
+    "dist": "npm run serveprod && npm run server.build &&",
+    "prod": "node build/index",
+    "db.seed": "tsx prisma/seed",
+    "db.migrate": "npx prisma migrate dev",
+    "serveprod": "npm run react.build && http-server --proxy http://localhost:3333? ./build"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -46,7 +49,10 @@
     "@types/node": "^16.18.25",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.1",
+    "autodetect-decoder-stream": "^2.0.2",
     "axios": "^1.3.6",
+    "csv-reader": "^1.0.11",
+    "csv-writer": "^1.6.0",
     "ejs": "^3.1.9",
     "fastify": "^4.16.3",
     "qrcode.react": "^3.1.0",

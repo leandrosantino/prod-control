@@ -1,7 +1,7 @@
 import React from 'react'
 import { Product } from '../../utils/schemas';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Container } from './style'
+import { Container, Content } from './style'
 
 interface Props {
   id: string;
@@ -29,7 +29,7 @@ export default function Tag({ id, product, host }: Props) {
 
   return (
     <Container>
-      <div className='container' >
+      <Content className='container' >
 
         <div className='fristTag' >
           <header className='header' >
@@ -151,11 +151,7 @@ export default function Tag({ id, product, host }: Props) {
 
         </div>
 
-
-
-        {/* <div className='qrCodeContent' > {qrcode} </div> */}
-
-      </div>
+      </Content>
     </Container>
   )
 }

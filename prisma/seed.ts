@@ -1,29 +1,58 @@
 import { PrismaClient } from '@prisma/client'
+import AutoDetectDecoderStream from 'autodetect-decoder-stream'
+import CsvReadableStream from 'csv-reader'
+import fs from 'fs'
+import path from 'path'
+import { z } from 'zod'
 
 const prisma = new PrismaClient();
+
+const productSchema = z.object({
+  description: z.string(),
+  partNumber: z.number().or(z.string()).transform(val => String(val)),
+  sapCode: z.number().or(z.string()).transform(val => String(val)),
+  projectNumber: z.number().or(z.string()).transform(val => String(val)),
+  amount: z.number()
+})
+
+type Product = z.input<typeof productSchema>
+
+
+function csvRead<T>() {
+  return new Promise<T[]>((resolve, reject) => {
+    const data: T[] = []
+    fs.createReadStream(path.join(__dirname, '../docs/Parts.csv'))
+      .pipe(new AutoDetectDecoderStream({ defaultEncoding: '1255' }))
+      .pipe(new CsvReadableStream({
+        parseNumbers: true,
+        parseBooleans: true,
+        trim: true,
+        asObject: true,
+        delimiter: ';'
+      }))
+      .on('data', function (row: T) {
+        data.push(row)
+      }).on('end', function () {
+        resolve(data)
+      });
+  })
+}
 
 (async () => {
   try {
 
-    await prisma.product.create({
-      data: {
-        description: 'CONJUNTO CINTA E FECHADURA 226',
-        partNumber: '520567640',
-        sapCode: '2230212003.01',
-        projectNumber: 226,
-        amount: 16
-      },
-    })
+    const products = z.array(productSchema).parse(await csvRead<Product>())
 
-    await prisma.product.create({
-      data: {
-        description: 'ISOLAMENTO DO PARALAMA ESQ 521',
-        partNumber: '519547723',
-        sapCode: '2230403002.01',
-        projectNumber: 521,
-        amount: 16
-      },
-    })
+    for await (let product of products) {
+      try {
+        await prisma.product.create({
+          data: product
+        })
+        console.log(`Success => ${product.description}`)
+      } catch (error) {
+        console.log(`Error => ${product.description} -- ${error}`)
+      }
+    }
 
   } catch (error) {
     console.log(error)
