@@ -90,6 +90,8 @@ export const Container = styled.div`
 .codeContent,
 .codeContent2 {
   width: 100%;
+  max-height: 36px;
+  min-height: 36px;
   padding: 8px 8px;
   font-size: 20px;
   font-weight: 700;
@@ -98,10 +100,9 @@ export const Container = styled.div`
 .infoContent,
 .infoContent2 {
   width: 100%;
-
-  padding: 8px;
+  padding: 4px;
   text-align: center;
-  font-size: 52px;
+  font-size: 46px;
   font-weight: 700;
 }
 
@@ -119,7 +120,7 @@ export const Container = styled.div`
 .fifo,
 .qrcode {
   width: 100%;
-  height: 208px;
+  height: 198px;
 }
 
 .fifo {

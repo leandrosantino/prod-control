@@ -1,16 +1,16 @@
 import { useCallback, useState, useEffect } from "react"
 import { api } from "../../services/api"
 import { idListSchema, Product, productSchema } from '../../utils/schemas'
-import { Container, Header, InputContent } from "./style"
+import { Container, EditProduct, Header, InputContent } from "./style"
 import Tag from "../../components/Tag"
 import { z } from "zod"
+import { Link } from "react-router-dom"
 
 export default function Home() {
 
   const [idList, setIdList] = useState<string[]>()
   const [productId, setProductId] = useState<number>(1)
   const [products, setProducts] = useState<Product[]>([])
-  const [host, setHost] = useState<string>('')
 
   useEffect(() => {
     (async () => {
@@ -19,9 +19,6 @@ export default function Home() {
         const apiResponse = await api.get(`/products`)
         console.log(apiResponse.data)
         setProducts(z.array(productSchema).parse(apiResponse.data))
-
-        const hostResponse = await api.get('/gethost')
-        setHost(z.string().parse(hostResponse.data))
 
       } catch (error) {
         console.log(error)
@@ -50,7 +47,16 @@ export default function Home() {
   return (
     <Container>
 
+      <EditProduct>
+        <Link
+          to='/products'
+        >
+          Ver Produtos
+        </Link>
+      </EditProduct>
+
       <Header>
+
         <h1>
           Gerador de Etiquetas
         </h1>
@@ -70,7 +76,7 @@ export default function Home() {
           </select>
         </InputContent>
         <button onClick={() => handleGetIds()}>
-          Gear Etiquetas
+          Gerar Etiquetas
         </button>
 
         <button onClick={() => window.print()}>
@@ -85,7 +91,6 @@ export default function Home() {
             key={id}
             id={id}
             product={products[productId]}
-            host={host}
           />
         ))
       }

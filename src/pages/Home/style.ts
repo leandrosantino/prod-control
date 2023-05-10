@@ -81,3 +81,24 @@ export const InputContent = styled.div`
 
 `
 
+export const EditProduct = styled.div`
+  position: fixed;
+  z-index: 100;
+  top: 18px;
+  right: 0;
+  margin-right: 10px;
+
+  padding: 9px;
+
+  border-radius: 4px;
+
+  a{
+    text-decoration: none;
+    color: #fff;
+  }
+  &:hover{
+    background-color: rgba(255,255,255, .2)
+  }
+
+`
+

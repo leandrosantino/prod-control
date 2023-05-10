@@ -6,29 +6,25 @@ import { Container, Content } from './style'
 interface Props {
   id: string;
   product: Product;
-  host: string;
 }
 
 //`http://${host}:3333/reg?item=${product.id}&tag=${id}`
 
-export default function Tag({ id, product, host }: Props) {
+export default function Tag({ id, product }: Props) {
 
   const qrcode = (
     <>
-      {
-        host === '' ?
-          <></> :
-          < QRCodeCanvas
-            id="qrCode"
-            value={JSON.stringify({
-              productId: product?.id,
-              tagId: id
-            })}
-            size={240}
-            fgColor='#002060'
-            bgColor={"#fff "} level={"H"}
-          />
-      }
+      < QRCodeCanvas
+        id="qrCode"
+        value={JSON.stringify({
+          productId: product?.id,
+          tagId: id
+        })}
+        size={240}
+        fgColor='#002060'
+        bgColor={"#fff "} level={"H"}
+      />
+
     </>
   );
 
