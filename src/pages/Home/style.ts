@@ -75,6 +75,13 @@ export const InputContent = styled.div`
 
   }
 
+  input{
+    padding: 4px;
+    border: none;
+    border-radius: 4px;
+    width: 80px;
+  }
+
   label{
     font-size: 14px;
   }
@@ -101,4 +108,3 @@ export const EditProduct = styled.div`
   }
 
 `
-

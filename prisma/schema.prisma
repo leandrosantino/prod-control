@@ -8,17 +8,20 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:../database/dev.db"
 }
 
 model Product {
-  id               String             @id @default(cuid())
-  description      String
-  partNumber       String             @unique
-  sapCode          String
-  projectNumber    String
-  amount           Int
-  ProductionRecord ProductionRecord[]
+  id                   String             @id @default(cuid())
+  description          String
+  technicalDescription String
+  ute                  String
+  classification       String
+  partNumber           String
+  sapCode              String
+  projectNumber        String
+  amount               Int
+  ProductionRecord     ProductionRecord[]
 }
 
 model ProductionRecord {

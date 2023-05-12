@@ -11,19 +11,15 @@
     "react.eject": "react-scripts eject",
     "dist": "npm run react.build && npm run server.build",
     "prod": "node build/index",
-    "db.seed": "tsx prisma/seed",
+    "db.seed": "tsx ./prisma/seed.ts",
     "db.migrate": "npx prisma migrate dev",
-    "db.studio": "npx prisma studio"
+    "db.studio": "npx prisma studio",
+    "deploy": "tsx deploy.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "npm run db.seed"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  "eslintConfig": {},
   "browserslist": {
     "production": [
       ">0.2%",
@@ -68,8 +64,13 @@
   },
   "devDependencies": {
     "@types/ejs": "^3.1.2",
+    "@types/ncp": "^2.0.5",
+    "@types/rimraf": "^4.0.5",
     "@types/styled-components": "^5.1.26",
+    "ncp": "^2.0.0",
+    "node-xlsx": "^0.21.2",
     "prisma": "^4.13.0",
+    "rimraf": "^5.0.0",
     "tsx": "^3.12.6"
   }
 }

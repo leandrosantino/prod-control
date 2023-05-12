@@ -67,9 +67,31 @@ export const Container = styled.div`
 .description {
   background-color: #000;
   color: #fff;
-  padding: 12px 8px;
-  font-size: 24px;
+  font-size: 16px;
+  padding: 5px;
+  height: 70px;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  span{
+    padding: 5px;
+  }
+
+  #ute{
+    width: 55px;
+    font-size: 14px;
+  }
+
+  div{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    width: 100%;
+  }
 }
 
 .dataContent {
@@ -120,7 +142,7 @@ export const Container = styled.div`
 .fifo,
 .qrcode {
   width: 100%;
-  height: 198px;
+  height: 180px;
 }
 
 .fifo {

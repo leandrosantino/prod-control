@@ -1,6 +1,5 @@
 import { PrismaClient } from '../database/client'
-import AutoDetectDecoderStream from 'autodetect-decoder-stream'
-import CsvReadableStream from 'csv-reader'
+import xlsx from 'node-xlsx'
 import fs from 'fs'
 import path from 'path'
 import { z } from 'zod'
@@ -12,36 +11,42 @@ const productSchema = z.object({
   partNumber: z.number().or(z.string()).transform(val => String(val)),
   sapCode: z.number().or(z.string()).transform(val => String(val)),
   projectNumber: z.number().or(z.string()).transform(val => String(val)),
-  amount: z.number()
+  amount: z.number(),
+  technicalDescription: z.string(),
+  ute: z.string(),
+  classification: z.string(),
 })
 
 type Product = z.input<typeof productSchema>
 
 
-function csvRead<T>() {
-  return new Promise<T[]>((resolve, reject) => {
-    const data: T[] = []
-    fs.createReadStream(path.join(__dirname, '../docs/Parts.csv'))
-      .pipe(new AutoDetectDecoderStream({ defaultEncoding: '1255' }))
-      .pipe(new CsvReadableStream({
-        parseNumbers: true,
-        parseBooleans: true,
-        trim: true,
-        asObject: true,
-        delimiter: ';'
-      }))
-      .on('data', function (row: T) {
-        data.push(row)
-      }).on('end', function () {
-        resolve(data)
-      });
-  })
-}
 
 (async () => {
   try {
 
-    const products = z.array(productSchema).parse(await csvRead<Product>())
+    const workSheets = xlsx.parse(path.join(__dirname, './dados.xls'));
+
+    const dados: Product[] = []
+
+    workSheets[0].data.forEach((entry, index) => {
+      if (index > 0) {
+        dados.push({
+          description: String(entry[0]),
+          technicalDescription: String(entry[1]),
+          ute: `UTE-${entry[5]}`,
+          classification: String(entry[4]),
+          partNumber: String(entry[6]),
+          sapCode: String(entry[7]),
+          projectNumber: String(entry[3]),
+          amount: entry[8],
+        })
+      }
+    })
+
+
+    const products = z.array(productSchema).parse(dados)
+
+    console.log(products)
 
     for await (let product of products) {
       try {

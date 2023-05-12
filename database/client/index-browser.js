@@ -89,6 +89,9 @@ Prisma.NullTypes = {
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   description: 'description',
+  technicalDescription: 'technicalDescription',
+  ute: 'ute',
+  classification: 'classification',
   partNumber: 'partNumber',
   sapCode: 'sapCode',
   projectNumber: 'projectNumber',

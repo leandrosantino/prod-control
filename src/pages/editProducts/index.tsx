@@ -3,16 +3,9 @@ import { Link, useParams } from 'react-router-dom'
 import { Container, Header, BtCase, Form, InputCase, Msg } from './style'
 import { api } from '../../services/api'
 import { z } from 'zod'
+import { productCreateSchema } from '../../utils/schemas'
 
 export function EditPorducts() {
-
-  const productSchema = z.object({
-    description: z.string(),
-    partNumber: z.string(),
-    sapCode: z.string(),
-    projectNumber: z.string(),
-    amount: z.number()
-  })
 
   const { id } = useParams<{ id: string }>()
 
@@ -22,6 +15,11 @@ export function EditPorducts() {
   const [partNumber, setPartNumber] = useState<string>()
   const [sapCode, setSapCode] = useState<string>()
   const [amount, setAmount] = useState<number>()
+
+  const [ute, setUte] = useState<string>()
+  const [classification, setClassification] = useState<string>()
+  const [technicalDescription, setTechnicalDescription] = useState<string>()
+
   const [status, setStatus] = useState<{ msg: string, error: boolean }>({
     error: false, msg: ''
   })
@@ -37,13 +35,16 @@ export function EditPorducts() {
     (async () => {
       const apiResponse = await api.get(`/product/${id}`)
       console.log(apiResponse.data)
-      const product = productSchema.parse(apiResponse.data)
+      const product = productCreateSchema.parse(apiResponse.data)
       setDescription(product.description)
       setDesc(product.description)
       setProject(product.projectNumber)
       setPartNumber(product.partNumber)
       setSapCode(product.sapCode)
       setAmount(product.amount)
+      setUte(product.ute)
+      setClassification(product.classification)
+      setTechnicalDescription(product.technicalDescription)
     })()
     // eslint-disable-next-line
   }, [])
@@ -51,12 +52,15 @@ export function EditPorducts() {
   async function handleSubmit() {
     try {
 
-      const parsedProducts = productSchema.parse({
+      const parsedProducts = productCreateSchema.parse({
         description,
         projectNumber: project,
         partNumber,
         sapCode,
         amount,
+        ute,
+        classification,
+        technicalDescription,
       })
 
       const apiResponse = await api.post<{
@@ -92,7 +96,6 @@ export function EditPorducts() {
         </div>
       </Header>
 
-
       <Form>
         <h3>
           {
@@ -103,12 +106,38 @@ export function EditPorducts() {
         </h3>
 
         <InputCase>
-          <label>Descrição:</label>
+          <label>Descrição Operacional:</label>
           <input
             style={{ width: '100%' }}
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+          />
+        </InputCase>
+
+        <InputCase>
+          <label>Descrição Técnica:</label>
+          <input
+            style={{ width: '100%' }}
+            type="text"
+            value={technicalDescription}
+            onChange={(e) => setTechnicalDescription(e.target.value)}
+          />
+        </InputCase>
+
+        <InputCase>
+          <label>Classificação:</label>
+          <input type="text"
+            value={classification}
+            onChange={(e) => setClassification(e.target.value)}
+          />
+        </InputCase>
+
+        <InputCase>
+          <label>UTE:</label>
+          <input type="text"
+            value={ute}
+            onChange={(e) => setUte(e.target.value)}
           />
         </InputCase>
 

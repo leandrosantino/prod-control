@@ -3,10 +3,10 @@ import fastifyStatic from '@fastify/static'
 import fastifyView from '@fastify/view'
 import ejs from 'ejs'
 import cors from '@fastify/cors'
-import fs from 'fs'
 import { createId as cuid } from '@paralleldrive/cuid2'
 import path from 'path'
 import { z } from 'zod'
+import config from './config.json'
 
 import { PrismaClient } from '../database/client'
 
@@ -20,11 +20,38 @@ const prisma = new PrismaClient({
   }
 });
 
-async function csvWriter() {
+function getTurno(now: Date) {
+  let turno = '0'
+
+  const y = now.getFullYear()
+  const m = now.getMonth()
+  const d = now.getDate()
+
+  const h1 = new Date(y, m, d, 6, 10, 0)
+  const h2 = new Date(y, m, d, 15, 48, 0)
+  const h3 = new Date(y, m, d, 23, 59, 0)
+  const h4 = new Date(y, m, d, 0, 0, 0)
+  const h5 = new Date(y, m, d, 1, 9, 0)
+
+  if (now >= h1 && now < h2) { turno = '1' }
+  if (now >= h2 && now < h3) { turno = '2' }
+  if (now >= h4 && now < h5) { turno = '2' }
+  if (now >= h5 && now < h1) { turno = '3' }
+
+  return turno
+}
+
+async function csvWriter(day: number, month: number, year: number) {
 
   try {
 
-    const data = await prisma.productionRecord.findMany({
+    let data = await prisma.productionRecord.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(year, month - 1, day, 0, 0, 0).toISOString(),
+          lte: new Date(year, month - 1, day, 23, 59, 59).toISOString(),
+        }
+      },
       include: {
         product: true
       }
@@ -36,26 +63,39 @@ async function csvWriter() {
         data: new Date(record.createdAt).toLocaleDateString(),
         time: new Date(record.createdAt).toLocaleTimeString(),
         description: record.product.description,
+        technicalDescription: record.product.technicalDescription,
+        classification: record.product.classification,
         partNumber: record.product.partNumber,
         sapCode: record.product.sapCode,
         projectNumber: record.product.projectNumber,
-        amount: record.product.amount
+        amount: record.product.amount,
+        turno: getTurno(new Date(record.createdAt)),
       }
     })
 
-    console.log(records)
+
+    const fileDate = new Date(year, month - 1, day)
+      .toLocaleDateString()
+      .replace('/', '-')
+      .replace('/', '-')
+
+    const local = path.join(config.report_path, `Relatório de Produção -${fileDate}.csv`)
 
     const csvWriter = createObjectCsvWriter({
-      path: path.join(__dirname, '../report.csv'),
+      path: path.resolve(local),
       header: [
         { id: 'id', title: 'Identificação da Etiqueta' },
         { id: 'data', title: 'Data' },
         { id: 'time', title: 'Hora' },
-        { id: 'description', title: 'Descrição do Porduto' },
+        { id: 'technicalDescription', title: 'Descricao do Porduto' },
+        { id: 'description', title: 'Descricao do Operacional' },
+        { id: 'classification', title: 'CLassificacao' },
         { id: 'partNumber', title: 'Part Number' },
-        { id: 'sapCode', title: 'Código Sap' },
+        { id: 'sapCode', title: 'Codigo Sap' },
         { id: 'projectNumber', title: 'Projeto' },
         { id: 'amount', title: 'Quant.' },
+        { id: 'turno', title: 'Turno' },
+
       ],
       fieldDelimiter: ';',
       encoding: 'utf8'
@@ -64,11 +104,10 @@ async function csvWriter() {
     await csvWriter.writeRecords(records)
 
   } catch (error) {
+    console.log(error)
     throw error
   }
 }
-
-
 
 const server = fastify();
 
@@ -84,8 +123,7 @@ server.register(fastifyStatic, {
 
 server.register(fastifyView, {
   engine: { ejs },
-  // root: path.join(__dirname, '../public/views')
-  root: path.join(__dirname, './views')
+  root: config.isDev ? path.join(__dirname, '../public/views') : path.join(__dirname, './views')
 })
 
 server.get('/', async (request, reply) => {
@@ -114,7 +152,11 @@ server.get('/tags/getids/:amount', async (request, reply) => {
 
 server.get('/products', async (request, reply) => {
   try {
-    return await prisma.product.findMany()
+    return await prisma.product.findMany({
+      orderBy: {
+        ute: 'asc'
+      }
+    })
   } catch (error) {
     throw error
   }
@@ -129,34 +171,38 @@ server.get('/gethost', async () => {
 })
 
 server.get('/reg', async (request, reply) => {
-  try {
-    const { item, tag } = z.object({
-      item: z.string(),
-      tag: z.string()
-    }).parse(request.query)
+  if (config.enable_qrcode_scan) {
+    try {
+      const { item, tag } = z.object({
+        item: z.string(),
+        tag: z.string()
+      }).parse(request.query)
 
-    const product = await prisma.product.findUnique({
-      where: { id: item }
-    })
+      const product = await prisma.product.findUnique({
+        where: { id: item }
+      })
 
-    if (product?.id) {
-      try {
-        await prisma.productionRecord.create({
-          data: {
-            id: tag,
-            productId: product?.id
-          }
-        })
-        return { success: true, msg: 'Registrado com Sucesso!' }
-      } catch {
-        return { success: false, msg: 'Esta etiqueta Já foi Registrada!' }
+      if (product?.id) {
+        try {
+          await prisma.productionRecord.create({
+            data: {
+              id: tag,
+              productId: product?.id
+            }
+          })
+          return { success: true, msg: 'Registrado com Sucesso!' }
+        } catch {
+          return { success: false, msg: 'Esta etiqueta Já foi registrada!' }
+        }
       }
-    }
 
-    return { success: false, msg: 'Este produdo ainda não foi cadastrado!' }
-  } catch (error) {
-    console.log(error)
-    throw error
+      return { success: false, msg: 'Este produdo ainda não foi cadastrado!' }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  } else {
+    return { success: false, msg: 'Sistema em manutenção, por favor, aguarde!' }
   }
 })
 
@@ -171,10 +217,18 @@ server.get('/report', async (request, reply) => {
 
 server.get('/report/generate', async (request, reply) => {
   try {
-    await csvWriter()
-    return { msg: `Relatorio gerado com sucesso! - ${new Date().toLocaleString()}` }
+
+    const { day, month, year } = z.object({
+      day: z.string().transform(val => Number(val)),
+      month: z.string().transform(val => Number(val)),
+      year: z.string().transform(val => Number(val))
+    }).parse(request.query)
+
+    await csvWriter(day, month, year)
+    return { msg: `Relatorio do dia ${new Date(year, month - 1, day).toLocaleDateString()} gerado com sucesso!` }
   } catch (error) {
-    return { msg: `Erro ao gerar relatório! - ${new Date().toLocaleString()}` }
+    console.log(error)
+    return { msg: `Erro ao gerar relatório!` }
   }
 })
 
@@ -204,17 +258,24 @@ server.get('/product/:id', async (request, reply) => {
   }
 })
 
+const productSchema = z.object({
+  description: z.string(),
+  partNumber: z.number().or(z.string()).transform(val => String(val)),
+  sapCode: z.number().or(z.string()).transform(val => String(val)),
+  projectNumber: z.number().or(z.string()).transform(val => String(val)),
+  amount: z.number(),
+  technicalDescription: z.string(),
+  ute: z.string(),
+  classification: z.string(),
+})
+
+type Product = z.input<typeof productSchema>
+
 server.post('/products/edit', async (request, reply) => {
   try {
     const product = z.object({
       id: z.string(),
-      data: z.object({
-        description: z.string(),
-        partNumber: z.string(),
-        sapCode: z.string(),
-        projectNumber: z.string(),
-        amount: z.number(),
-      })
+      data: productSchema
     }).parse(request.body)
 
 
@@ -241,14 +302,7 @@ server.post('/products/edit', async (request, reply) => {
 
 server.post('/products/create', async (request, reply) => {
   try {
-    const product = z.object({
-      description: z.string(),
-      partNumber: z.string(),
-      sapCode: z.string(),
-      projectNumber: z.string(),
-      amount: z.number(),
-    }).parse(request.body)
-
+    const product = productSchema.parse(request.body)
 
     await prisma.product.create({
       data: product
@@ -268,16 +322,8 @@ server.post('/products/create', async (request, reply) => {
   }
 })
 
-server.listen({ port: 3333, host: '0.0.0.0' }, () => {
+console.log(config)
 
-  try {
-    // const filePath = path.join(__dirname, '../public/address.txt')
-    const filePath = path.join(__dirname, './address.txt')
-    address = fs.readFileSync(filePath, 'utf8');
-    console.log(address)
-  } catch {
-    console.log('Erro in read address')
-  }
-
+server.listen({ port: config.port, host: '0.0.0.0' }, () => {
   console.log('server started!')
 })
