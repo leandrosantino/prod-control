@@ -6,6 +6,7 @@ import { rimrafSync as rmdir } from 'rimraf'
 import packageJson from './package.json'
 import configJson from './server/config.json'
 
+
 const output = path.join(__dirname, '../app')
 
 const paterns = {
