@@ -19,6 +19,9 @@ export type PrismaPromise<T> = runtime.Types.Public.PrismaPromise<T>
 export type Product = {
   id: string
   description: string
+  technicalDescription: string
+  ute: string
+  classification: string
   partNumber: string
   sapCode: string
   projectNumber: string
@@ -874,6 +877,9 @@ export namespace Prisma {
   export type ProductMinAggregateOutputType = {
     id: string | null
     description: string | null
+    technicalDescription: string | null
+    ute: string | null
+    classification: string | null
     partNumber: string | null
     sapCode: string | null
     projectNumber: string | null
@@ -883,6 +889,9 @@ export namespace Prisma {
   export type ProductMaxAggregateOutputType = {
     id: string | null
     description: string | null
+    technicalDescription: string | null
+    ute: string | null
+    classification: string | null
     partNumber: string | null
     sapCode: string | null
     projectNumber: string | null
@@ -892,6 +901,9 @@ export namespace Prisma {
   export type ProductCountAggregateOutputType = {
     id: number
     description: number
+    technicalDescription: number
+    ute: number
+    classification: number
     partNumber: number
     sapCode: number
     projectNumber: number
@@ -911,6 +923,9 @@ export namespace Prisma {
   export type ProductMinAggregateInputType = {
     id?: true
     description?: true
+    technicalDescription?: true
+    ute?: true
+    classification?: true
     partNumber?: true
     sapCode?: true
     projectNumber?: true
@@ -920,6 +935,9 @@ export namespace Prisma {
   export type ProductMaxAggregateInputType = {
     id?: true
     description?: true
+    technicalDescription?: true
+    ute?: true
+    classification?: true
     partNumber?: true
     sapCode?: true
     projectNumber?: true
@@ -929,6 +947,9 @@ export namespace Prisma {
   export type ProductCountAggregateInputType = {
     id?: true
     description?: true
+    technicalDescription?: true
+    ute?: true
+    classification?: true
     partNumber?: true
     sapCode?: true
     projectNumber?: true
@@ -1026,6 +1047,9 @@ export namespace Prisma {
   export type ProductGroupByOutputType = {
     id: string
     description: string
+    technicalDescription: string
+    ute: string
+    classification: string
     partNumber: string
     sapCode: string
     projectNumber: string
@@ -1054,6 +1078,9 @@ export namespace Prisma {
   export type ProductSelect = {
     id?: boolean
     description?: boolean
+    technicalDescription?: boolean
+    ute?: boolean
+    classification?: boolean
     partNumber?: boolean
     sapCode?: boolean
     projectNumber?: boolean
@@ -2717,6 +2744,9 @@ export namespace Prisma {
   export const ProductScalarFieldEnum: {
     id: 'id',
     description: 'description',
+    technicalDescription: 'technicalDescription',
+    ute: 'ute',
+    classification: 'classification',
     partNumber: 'partNumber',
     sapCode: 'sapCode',
     projectNumber: 'projectNumber',
@@ -2761,6 +2791,9 @@ export namespace Prisma {
     NOT?: Enumerable<ProductWhereInput>
     id?: StringFilter | string
     description?: StringFilter | string
+    technicalDescription?: StringFilter | string
+    ute?: StringFilter | string
+    classification?: StringFilter | string
     partNumber?: StringFilter | string
     sapCode?: StringFilter | string
     projectNumber?: StringFilter | string
@@ -2771,6 +2804,9 @@ export namespace Prisma {
   export type ProductOrderByWithRelationInput = {
     id?: SortOrder
     description?: SortOrder
+    technicalDescription?: SortOrder
+    ute?: SortOrder
+    classification?: SortOrder
     partNumber?: SortOrder
     sapCode?: SortOrder
     projectNumber?: SortOrder
@@ -2780,12 +2816,14 @@ export namespace Prisma {
 
   export type ProductWhereUniqueInput = {
     id?: string
-    partNumber?: string
   }
 
   export type ProductOrderByWithAggregationInput = {
     id?: SortOrder
     description?: SortOrder
+    technicalDescription?: SortOrder
+    ute?: SortOrder
+    classification?: SortOrder
     partNumber?: SortOrder
     sapCode?: SortOrder
     projectNumber?: SortOrder
@@ -2803,6 +2841,9 @@ export namespace Prisma {
     NOT?: Enumerable<ProductScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     description?: StringWithAggregatesFilter | string
+    technicalDescription?: StringWithAggregatesFilter | string
+    ute?: StringWithAggregatesFilter | string
+    classification?: StringWithAggregatesFilter | string
     partNumber?: StringWithAggregatesFilter | string
     sapCode?: StringWithAggregatesFilter | string
     projectNumber?: StringWithAggregatesFilter | string
@@ -2851,6 +2892,9 @@ export namespace Prisma {
   export type ProductCreateInput = {
     id?: string
     description: string
+    technicalDescription: string
+    ute: string
+    classification: string
     partNumber: string
     sapCode: string
     projectNumber: string
@@ -2861,6 +2905,9 @@ export namespace Prisma {
   export type ProductUncheckedCreateInput = {
     id?: string
     description: string
+    technicalDescription: string
+    ute: string
+    classification: string
     partNumber: string
     sapCode: string
     projectNumber: string
@@ -2871,6 +2918,9 @@ export namespace Prisma {
   export type ProductUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string
@@ -2881,6 +2931,9 @@ export namespace Prisma {
   export type ProductUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string
@@ -2891,6 +2944,9 @@ export namespace Prisma {
   export type ProductUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string
@@ -2900,6 +2956,9 @@ export namespace Prisma {
   export type ProductUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string
@@ -2979,6 +3038,9 @@ export namespace Prisma {
   export type ProductCountOrderByAggregateInput = {
     id?: SortOrder
     description?: SortOrder
+    technicalDescription?: SortOrder
+    ute?: SortOrder
+    classification?: SortOrder
     partNumber?: SortOrder
     sapCode?: SortOrder
     projectNumber?: SortOrder
@@ -2992,6 +3054,9 @@ export namespace Prisma {
   export type ProductMaxOrderByAggregateInput = {
     id?: SortOrder
     description?: SortOrder
+    technicalDescription?: SortOrder
+    ute?: SortOrder
+    classification?: SortOrder
     partNumber?: SortOrder
     sapCode?: SortOrder
     projectNumber?: SortOrder
@@ -3001,6 +3066,9 @@ export namespace Prisma {
   export type ProductMinOrderByAggregateInput = {
     id?: SortOrder
     description?: SortOrder
+    technicalDescription?: SortOrder
+    ute?: SortOrder
+    classification?: SortOrder
     partNumber?: SortOrder
     sapCode?: SortOrder
     projectNumber?: SortOrder
@@ -3297,6 +3365,9 @@ export namespace Prisma {
   export type ProductCreateWithoutProductionRecordInput = {
     id?: string
     description: string
+    technicalDescription: string
+    ute: string
+    classification: string
     partNumber: string
     sapCode: string
     projectNumber: string
@@ -3306,6 +3377,9 @@ export namespace Prisma {
   export type ProductUncheckedCreateWithoutProductionRecordInput = {
     id?: string
     description: string
+    technicalDescription: string
+    ute: string
+    classification: string
     partNumber: string
     sapCode: string
     projectNumber: string
@@ -3325,6 +3399,9 @@ export namespace Prisma {
   export type ProductUpdateWithoutProductionRecordInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string
@@ -3334,6 +3411,9 @@ export namespace Prisma {
   export type ProductUncheckedUpdateWithoutProductionRecordInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    technicalDescription?: StringFieldUpdateOperationsInput | string
+    ute?: StringFieldUpdateOperationsInput | string
+    classification?: StringFieldUpdateOperationsInput | string
     partNumber?: StringFieldUpdateOperationsInput | string
     sapCode?: StringFieldUpdateOperationsInput | string
     projectNumber?: StringFieldUpdateOperationsInput | string

@@ -11,6 +11,7 @@ export default function Home() {
   const [idList, setIdList] = useState<string[]>()
   const [productId, setProductId] = useState<number>(1)
   const [products, setProducts] = useState<Product[]>([])
+  const [amount, setAmount] = useState<number>(1)
 
   useEffect(() => {
     (async () => {
@@ -30,14 +31,14 @@ export default function Home() {
     (async () => {
       try {
 
-        const apiResponse = await api.get(`/tags/getids/${20}`)
+        const apiResponse = await api.get(`/tags/getids/${amount}`)
         setIdList(idListSchema.parse(apiResponse.data))
 
       } catch (error) {
         console.log(error)
       }
     })()
-  }, [])
+  }, [amount])
 
   useEffect(() => {
     handleGetIds()
@@ -62,6 +63,14 @@ export default function Home() {
         </h1>
 
         <InputContent>
+          <label htmlFor="product">Quant.:</label>
+          <input type="text"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+        </InputContent>
+
+        <InputContent>
           <label htmlFor="product">Produto:</label>
           <select
             id="product"
@@ -70,7 +79,7 @@ export default function Home() {
           >
             {
               products?.map((entry, index) => (
-                <option key={entry.id} value={index} >{entry.description}</option>
+                <option key={entry.id} value={index} >{entry.description} - {entry.ute}</option>
               ))
             }
           </select>

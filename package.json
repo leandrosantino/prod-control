@@ -1,29 +1,27 @@
 {
   "name": "prod-control",
-  "version": "0.1.0",
+  "version": "1.0",
   "private": true,
   "scripts": {
     "server": "tsx watch ./server/index.ts config=./tsconfig.node.json",
-    "server.build": "tsc -p ./tsconfig.node.json",
+    "server.build": "set NODE_ENV=production && webpack",
+    "server.build.dev": "set NODE_ENV=development && webpack",
     "react": "react-scripts start",
     "react.build": "react-scripts build",
     "react.test": "react-scripts test",
     "react.eject": "react-scripts eject",
     "dist": "npm run react.build && npm run server.build",
     "prod": "node build/index",
-    "db.seed": "tsx prisma/seed",
-    "db.migrate": "npx prisma migrate dev",
-    "db.studio": "npx prisma studio"
+    "db.seed": "tsx ./prisma/seed.ts",
+    "db.migrate": "prisma migrate dev",
+    "db.studio": "prisma studio",
+    "deploy": "set NODE_ENV=production && tsx deploy.ts",
+    "deploy.dev": "set NODE_ENV=development && tsx deploy.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "npm run db.seed"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  "eslintConfig": {},
   "browserslist": {
     "production": [
       ">0.2%",
@@ -68,8 +66,18 @@
   },
   "devDependencies": {
     "@types/ejs": "^3.1.2",
+    "@types/ncp": "^2.0.5",
+    "@types/rimraf": "^4.0.5",
     "@types/styled-components": "^5.1.26",
+    "ncp": "^2.0.0",
+    "node-xlsx": "^0.21.2",
     "prisma": "^4.13.0",
-    "tsx": "^3.12.6"
+    "rimraf": "^5.0.0",
+    "ts-loader": "^9.4.2",
+    "tsconfig-paths-webpack-plugin": "^4.0.1",
+    "tsx": "^3.12.6",
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-node-externals": "^3.0.0"
   }
 }

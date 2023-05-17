@@ -1,11 +1,12 @@
 import { PrismaClient } from '../database/client'
+const prisma = new PrismaClient();
+
 import AutoDetectDecoderStream from 'autodetect-decoder-stream'
 import CsvReadableStream from 'csv-reader'
 import fs from 'fs'
 import path from 'path'
-import { z } from 'zod'
+import { z } from 'zod';
 
-const prisma = new PrismaClient();
 
 const productSchema = z.object({
   description: z.string(),
@@ -17,11 +18,10 @@ const productSchema = z.object({
 
 type Product = z.input<typeof productSchema>
 
-
 function csvRead<T>() {
   return new Promise<T[]>((resolve, reject) => {
     const data: T[] = []
-    fs.createReadStream(path.join(__dirname, '../docs/Parts.csv'))
+    fs.createReadStream(path.join(__dirname, './Pasta1.csv'))
       .pipe(new AutoDetectDecoderStream({ defaultEncoding: '1255' }))
       .pipe(new CsvReadableStream({
         parseNumbers: true,
@@ -39,22 +39,13 @@ function csvRead<T>() {
 }
 
 (async () => {
-  try {
-
-    const products = z.array(productSchema).parse(await csvRead<Product>())
-
-    for await (let product of products) {
-      try {
-        await prisma.product.create({
-          data: product
-        })
-        console.log(`Success => ${product.description}`)
-      } catch (error) {
-        console.log(`Error => ${product.description} -- ${error}`)
-      }
-    }
-
-  } catch (error) {
-    console.log(error)
+  const data = z.array(productSchema).parse(await csvRead<Product>())
+  for await (let item of data) {
+    const prod = await prisma.product.create({
+      data: item
+    })
+    console.log(prod)
   }
 })()
+
+

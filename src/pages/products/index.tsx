@@ -33,8 +33,11 @@ export function Porducts() {
       </Header>
 
       <Title>
-        <Col style={{ width: '400px' }} >Descrição</Col>
+        <Col style={{ width: '200px' }} >Descrição</Col>
+        <Col style={{ width: '200px' }} >Descrição Técnica</Col>
         <Col >Projeto</Col>
+        <Col >UTE</Col>
+        <Col >Classificação</Col>
         <Col >Part Number</Col>
         <Col >Código SAP</Col>
         <Col >Quantidade</Col>
@@ -43,8 +46,11 @@ export function Porducts() {
       <Table>
         {products?.map(entry => (
           <Row key={entry.id} >
-            <Col style={{ width: '400px' }} >{entry.description}</Col>
+            <Col style={{ width: '200px' }} >{entry.description}</Col>
+            <Col style={{ width: '200px' }} >{entry.technicalDescription}</Col>
             <Col >{entry.projectNumber}</Col>
+            <Col >{entry.ute}</Col>
+            <Col >{entry.classification}</Col>
             <Col >{entry.partNumber}</Col>
             <Col >{entry.sapCode}</Col>
             <Col >{entry.amount}</Col>

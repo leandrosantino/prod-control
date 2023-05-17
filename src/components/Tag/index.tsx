@@ -12,6 +12,7 @@ interface Props {
 
 export default function Tag({ id, product }: Props) {
 
+
   const qrcode = (
     <>
       < QRCodeCanvas
@@ -24,7 +25,6 @@ export default function Tag({ id, product }: Props) {
         fgColor='#002060'
         bgColor={"#fff "} level={"H"}
       />
-
     </>
   );
 
@@ -41,7 +41,11 @@ export default function Tag({ id, product }: Props) {
           <div className='label' >DESCRIÇÃO:</div>
 
           <div className='description'>
-            {product?.description}
+            <div>
+              <span>{product?.description}</span>
+              <span>{product?.technicalDescription}</span>
+            </div>
+            <span id='ute' >{product?.ute}</span>
           </div>
 
           <section className='dataContent' >
@@ -110,10 +114,15 @@ export default function Tag({ id, product }: Props) {
           <div className='label' >DESCRIÇÃO:</div>
 
           <div className='description'
-            style={{ backgroundColor: '#002060' }}
-          >
-            {product?.description}
+            style={{ backgroundColor: '#002060' }}>
+            <div>
+              <span>{product?.description}</span>
+              <span>{product?.technicalDescription}</span>
+            </div>
+            <span id='ute'>{product?.ute}</span>
           </div>
+
+
 
           <section className='dataContent' style={{ gap: 0 }} >
             <div className='frame' >
@@ -140,7 +149,7 @@ export default function Tag({ id, product }: Props) {
 
             <div className='frame ' >
               <div className='label' >QRCODE:</div>
-              <div className='qrcode colorBlue' style={{ height: 330 }} >
+              <div className='qrcode colorBlue' style={{ height: 296 }} >
                 <div className='qrCodeContent' >{qrcode} </div>
               </div>
             </div>
