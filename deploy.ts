@@ -1,21 +1,12 @@
 import { copyFileSync as copyFile, mkdirSync as mkdir, existsSync, writeFileSync } from 'fs'
 import { exec, ExecOptions } from 'child_process'
-import path, { dirname } from 'path';
+import path from 'path';
 import ncp from 'ncp'
 import { rimrafSync as rmdir } from 'rimraf'
 import packageJson from './package.json'
 import configJson from './server/config.json'
-import appInfo from './app.info.json'
-const mode = /production/.test(String(process.env.NODE_ENV)) ? 'production' : 'development'
 
-const version = Number((appInfo.version + 0.1).toFixed(2))
-appInfo.version = version
-
-if (mode === 'production') {
-  writeFileSync(path.join(__dirname, './app.info.json'), JSON.stringify(appInfo, null, 4))
-}
-
-const output = path.join(__dirname, `./dist/ProdControl-v${version}`)
+const output = path.join(__dirname, '../app')
 
 const paterns = {
   output,
@@ -26,6 +17,7 @@ const paterns = {
   ],
   file: [
     { from: path.join(__dirname, 'build/server/index.js',), to: path.join(output, 'build/index.js') },
+    { from: path.join(__dirname, 'prisma/update.ts',), to: path.join(output, 'update.ts') },
     { from: path.join(__dirname, '.env',), to: path.join(output, '.env') },
   ]
 };
@@ -35,11 +27,9 @@ const paterns = {
   await shell('npm run react.build')
 
   console.log('- Clear output dir \n')
-  if (existsSync(path.join(paterns.output))) {
-    rmdir(path.join(paterns.output))
-  }
-  mkdir(paterns.output)
+  rmdir(path.join(paterns.output, 'build'))
   mkdir(path.join(paterns.output, 'build'))
+
 
   await copyDir(paterns.dir[0].from, paterns.dir[0].to)
 
@@ -55,23 +45,19 @@ const paterns = {
   createPackageJson()
   createConfgJson()
 
+  await shell('npm i', {
+    cwd: paterns.output
+  })
 
-  if (mode === 'production') {
-    await shell('npm i', {
-      cwd: paterns.output
-    })
-
-    await shell('npm run db.migrate', {
-      cwd: paterns.output
-    })
-  }
+  await shell('npm run db.migrate', {
+    cwd: paterns.output
+  })
 
 })()
 
 
 function createPackageJson() {
   packageJson.scripts.server = 'node build/index'
-  packageJson.version = String(appInfo)
   writeFileSync(path.join(output, './package.json'), JSON.stringify(packageJson, null, 4))
 }
 

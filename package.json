@@ -1,11 +1,10 @@
 {
   "name": "prod-control",
-  "version": "1.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "server": "tsx watch ./server/index.ts config=./tsconfig.node.json",
-    "server.build": "set NODE_ENV=production && webpack",
-    "server.build.dev": "set NODE_ENV=development && webpack",
+    "server.build": "tsc -p ./tsconfig.node.json",
     "react": "react-scripts start",
     "react.build": "react-scripts build",
     "react.test": "react-scripts test",
@@ -13,10 +12,9 @@
     "dist": "npm run react.build && npm run server.build",
     "prod": "node build/index",
     "db.seed": "tsx ./prisma/seed.ts",
-    "db.migrate": "prisma migrate dev",
-    "db.studio": "prisma studio",
-    "deploy": "set NODE_ENV=production && tsx deploy.ts",
-    "deploy.dev": "set NODE_ENV=development && tsx deploy.ts"
+    "db.migrate": "npx prisma migrate dev",
+    "db.studio": "npx prisma studio",
+    "deploy": "tsx deploy.ts"
   },
   "prisma": {
     "seed": "npm run db.seed"
@@ -73,11 +71,6 @@
     "node-xlsx": "^0.21.2",
     "prisma": "^4.13.0",
     "rimraf": "^5.0.0",
-    "ts-loader": "^9.4.2",
-    "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "tsx": "^3.12.6",
-    "webpack": "^5.82.1",
-    "webpack-cli": "^5.1.1",
-    "webpack-node-externals": "^3.0.0"
+    "tsx": "^3.12.6"
   }
 }
