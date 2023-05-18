@@ -5,20 +5,27 @@ import ncp from 'ncp'
 import { rimrafSync as rmdir } from 'rimraf'
 import packageJson from './package.json'
 import configJson from './server/config.json'
+import appInfo from './app.info.json'
+const isDev = /development/.test(String(process.env.NODE_ENV))
 
+const version = Number((appInfo.version + 0.1).toFixed(2))
 
-const output = path.join(__dirname, '../app')
+if (!isDev) {
+  appInfo.version = version
+  writeFileSync(path.join(__dirname, './app.info.json'), JSON.stringify(appInfo, null, 4))
+}
+
+const output = path.join(__dirname, `./dist/ProdControl-v${version}`)
 
 const paterns = {
-  output,
   dir: [
     { from: path.join(__dirname, 'build'), to: path.join(output, 'build') },
     { from: path.join(__dirname, 'prisma'), to: path.resolve(output, 'prisma') },
     // { from: path.join(__dirname, 'database', 'client'), to: path.join(output, 'database', 'client') },
   ],
   file: [
-    { from: path.join(__dirname, 'build/server/index.js',), to: path.join(output, 'build/index.js') },
-    { from: path.join(__dirname, 'prisma/update.ts',), to: path.join(output, 'update.ts') },
+    { from: path.join(__dirname, 'build/index.js',), to: path.join(output, 'build/index.js') },
+    // { from: path.join(__dirname, 'prisma/update.ts',), to: path.join(output, 'update.ts') },
     { from: path.join(__dirname, '.env',), to: path.join(output, '.env') },
   ]
 };
@@ -28,8 +35,11 @@ const paterns = {
   await shell('npm run react.build')
 
   console.log('- Clear output dir \n')
-  rmdir(path.join(paterns.output, 'build'))
-  mkdir(path.join(paterns.output, 'build'))
+  if (existsSync(output)) {
+    rmdir(output)
+  }
+  mkdir(output)
+  mkdir(path.join(output, 'build'))
 
 
   await copyDir(paterns.dir[0].from, paterns.dir[0].to)
@@ -46,13 +56,15 @@ const paterns = {
   createPackageJson()
   createConfgJson()
 
-  await shell('npm i', {
-    cwd: paterns.output
-  })
+  if (!isDev) {
+    await shell('npm i', {
+      cwd: output
+    })
 
-  await shell('npm run db.migrate', {
-    cwd: paterns.output
-  })
+    await shell('npm run db.migrate', {
+      cwd: output
+    })
+  }
 
 })()
 

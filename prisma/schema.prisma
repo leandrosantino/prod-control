@@ -29,4 +29,5 @@ model ProductionRecord {
   createdAt DateTime @default(now())
   productId String
   product   Product  @relation(fields: [productId], references: [id])
+  amount    Int?
 }

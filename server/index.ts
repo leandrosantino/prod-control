@@ -95,7 +95,6 @@ async function csvWriter(day: number, month: number, year: number) {
         { id: 'projectNumber', title: 'Projeto' },
         { id: 'amount', title: 'Quant.' },
         { id: 'turno', title: 'Turno' },
-
       ],
       fieldDelimiter: ';',
       encoding: 'utf8'
@@ -319,6 +318,36 @@ server.post('/products/create', async (request, reply) => {
       error: true,
       msg: 'Falha ao ao cadastrar produto'
     })
+  }
+})
+
+server.get('/auth', async (request, reply) => {
+  try {
+
+    const requestParsed = z.object({
+      password: z.string()
+    }).parse(request.query)
+
+    if (requestParsed.password === config.admin_pass) {
+      return reply.send({
+        isAuth: true,
+        error: false,
+        msg: 'senha válida'
+      }).status(500)
+    }
+
+    return reply.send({
+      isAuth: false,
+      error: false,
+      msg: 'senha válida'
+    }).status(500)
+
+  } catch (error) {
+    return reply.send({
+      error: true,
+      msg: 'Falha interna do servidor'
+    }).status(500)
+
   }
 })
 

@@ -2,5 +2,6 @@
   "port": 3336,
   "report_path": "D:/Dev",
   "enable_qrcode_scan": true,
-  "isDev": true
+  "isDev": true,
+  "admin_pass": "GPT4598"
 }
