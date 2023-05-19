@@ -1,4 +1,4 @@
-import fastify from 'fastify'
+import fastify, { errorCodes } from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifyView from '@fastify/view'
 import ejs from 'ejs'
@@ -133,7 +133,7 @@ server.get('/', async (request, reply) => {
   }
 })
 
-server.get('/tags/getids/:amount', async (request, reply) => {
+server.get('/api/tags/getids/:amount', async (request, reply) => {
   try {
     const pramsSchema = z.object({
       amount: z.string().transform((value => Number(value)))
@@ -149,7 +149,7 @@ server.get('/tags/getids/:amount', async (request, reply) => {
   }
 })
 
-server.get('/products', async (request, reply) => {
+server.get('/api/products', async (request, reply) => {
   try {
     return await prisma.product.findMany({
       orderBy: {
@@ -161,7 +161,7 @@ server.get('/products', async (request, reply) => {
   }
 })
 
-server.get('/gethost', async () => {
+server.get('/api/gethost', async () => {
   try {
     return address
   } catch (error) {
@@ -206,7 +206,7 @@ server.get('/reg', async (request, reply) => {
 })
 
 
-server.get('/report', async (request, reply) => {
+server.get('/api/report', async (request, reply) => {
   try {
     return reply.view('report.ejs', { msg: '' })
   } catch (error) {
@@ -214,7 +214,7 @@ server.get('/report', async (request, reply) => {
   }
 })
 
-server.get('/report/generate', async (request, reply) => {
+server.get('/api/report/generate', async (request, reply) => {
   try {
 
     const { day, month, year } = z.object({
@@ -231,7 +231,7 @@ server.get('/report/generate', async (request, reply) => {
   }
 })
 
-server.get('/product/:id', async (request, reply) => {
+server.get('/api/product/:id', async (request, reply) => {
   try {
 
     const { id } = z.object({
@@ -270,7 +270,7 @@ const productSchema = z.object({
 
 type Product = z.input<typeof productSchema>
 
-server.post('/products/edit', async (request, reply) => {
+server.post('/api/products/edit', async (request, reply) => {
   try {
     const product = z.object({
       id: z.string(),
@@ -299,7 +299,7 @@ server.post('/products/edit', async (request, reply) => {
   }
 })
 
-server.post('/products/create', async (request, reply) => {
+server.post('/api/products/create', async (request, reply) => {
   try {
     const product = productSchema.parse(request.body)
 
@@ -321,7 +321,7 @@ server.post('/products/create', async (request, reply) => {
   }
 })
 
-server.get('/auth', async (request, reply) => {
+server.get('/api/auth', async (request, reply) => {
   try {
 
     const requestParsed = z.object({
@@ -349,6 +349,10 @@ server.get('/auth', async (request, reply) => {
     }).status(500)
 
   }
+})
+
+server.setNotFoundHandler((request, reply) => {
+  reply.sendFile('index.html')
 })
 
 console.log(config)

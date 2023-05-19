@@ -11,7 +11,6 @@ export const Container = styled.div`
   width: 30%;
   height: 30%;
   background-color: ${colors.gray[200]};
-  margin-top: 120px;
   border-radius: 12px;
   gap: 12px;
 

@@ -117,6 +117,7 @@ export const Title = styled.div`
   height: 40px;
   background-color: #8a8a8a;
   padding: 10px 5px;
+  left: 0;
 
   div{
     height: fit-content;
