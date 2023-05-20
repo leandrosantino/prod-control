@@ -4,7 +4,7 @@ import { Container, BtCase, Form, InputCase, Msg } from './style'
 import { api } from '../../services/api'
 import { z } from 'zod'
 import { productCreateSchema } from '../../utils/schemas'
-import { Header } from '../../style/global'
+import { Header } from '../../components/header'
 
 export function EditPorducts() {
 

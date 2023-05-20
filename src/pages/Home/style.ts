@@ -20,7 +20,7 @@ export const Menu = styled.menu`
   align-items: center;
   flex-direction: column;
   gap: 12px;
-  width: 30%;
+  width: 400px;
   background-color: ${colors.gray[200]};
   border-radius: 12px;
   padding: 28px;

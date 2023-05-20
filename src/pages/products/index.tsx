@@ -5,7 +5,7 @@ import { Product, productSchema } from '../../utils/schemas'
 import { Link } from 'react-router-dom'
 import { Container, EditButton } from './style'
 import { Col, Row, Title, Table } from '../../style/global'
-import { Header } from '../../style/global'
+import { Header } from '../../components/header'
 
 export function Porducts() {
 

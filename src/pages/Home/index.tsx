@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
-import { Header } from "../../style/global";
+import { Header } from "../../components/header";
 import { Container, Menu } from "./style";
 import { RiProfileLine } from 'react-icons/ri'
 import { BsBoxSeamFill } from 'react-icons/bs'
 import { HiDocumentReport } from 'react-icons/hi'
+import { useDialog } from "../../hooks/useDialog";
 
 
 export function Home() {
+
   return (
     <Container>
 

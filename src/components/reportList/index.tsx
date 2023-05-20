@@ -1,4 +1,5 @@
-import { Col, Table, Row, Title } from '../../style/global'
+import { Col, Row, Title } from '../../style/global'
+import { Table } from '../table'
 import { Container } from './style'
 
 
@@ -10,34 +11,6 @@ export function ReportList() {
 
   return (
     <Container>
-
-      <Title>
-        <Col style={{ width: '200px' }} >Descrição</Col>
-        <Col style={{ width: '200px' }} >Descrição Técnica</Col>
-        <Col >Projeto</Col>
-        <Col >UTE</Col>
-        <Col >Classificação</Col>
-        <Col >Part Number</Col>
-        <Col >Código SAP</Col>
-        <Col >Quantidade</Col>
-        <Col style={{ width: '70px' }} > ---- </Col>
-      </Title>
-      <Table>
-        {products?.map(entry => (
-          <Row key={entry.id} >
-            <Col style={{ width: '200px' }} >{entry.description}</Col>
-            <Col style={{ width: '200px' }} >{entry.technicalDescription}</Col>
-            <Col >{entry.projectNumber}</Col>
-            <Col >{entry.ute}</Col>
-            <Col >{entry.classification}</Col>
-            <Col >{entry.partNumber}</Col>
-            <Col >{entry.sapCode}</Col>
-            <Col >{entry.amount}</Col>
-            <Col style={{ width: '70px' }} >
-            </Col>
-          </Row>
-        ))}
-      </Table>
 
     </Container>
   )

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container } from './style';
 import { Sigin } from '../../components/sigin';
 import { ReportList } from '../../components/reportList';
-import { Header } from '../../style/global';
+import { Header } from '../../components/header';
 import { Link } from 'react-router-dom';
 
 
