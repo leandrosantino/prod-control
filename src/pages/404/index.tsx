@@ -7,7 +7,7 @@ export function NotFound() {
     <Container>
 
       <Header>
-        <h1>Adler Pelzer Group</h1>
+        <h1>Adler Pelzer Group - Sistema de Apontamento de Produção</h1>
       </Header>
 
 

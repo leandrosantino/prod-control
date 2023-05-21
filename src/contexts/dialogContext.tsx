@@ -1,25 +1,36 @@
 import { ReactNode, createContext, useState } from 'react'
 import { Dialog } from '../components/dialog'
+import { Prompt } from '../components/dialog/prompt';
 
 export interface DialogProps {
   title: string;
   message: string;
   isQuestion?: boolean;
-  accept?: () => void;
+  accept?: (value?: any) => void;
   refuse?: () => void;
   finally: () => void;
+  error?: boolean;
+  type?: 'text' | 'password';
 }
 
-interface AlertProps { title: string, message: string }
+interface AlertProps { title: string, message: string, error?: boolean }
 
 interface QuestionProps extends AlertProps {
   accept: () => void;
   refuse: () => void;
 }
 
+interface PromptProps extends AlertProps {
+  type: 'text' | 'password';
+  accept?: (value?: any) => void;
+  refuse: () => void;
+}
+
 interface DialogContextProps {
   alert: (props: AlertProps) => void;
   question: (props: QuestionProps) => void;
+  prompt: (props: PromptProps) => void;
+
 }
 
 export const DialogContext = createContext({} as DialogContextProps)
@@ -27,12 +38,15 @@ const { Provider } = DialogContext
 
 export function DialogProvider({ children }: { children: ReactNode }) {
 
+  const [isPrompt, setIsPrompt] = useState(false)
   const [show, setShow] = useState(false)
   const [dialogPorps, setDialogProps] = useState<DialogProps>({} as DialogProps)
 
-  function alert({ message, title }: AlertProps) {
+  function alert({ message, title, error }: AlertProps) {
     setShow(true)
+    setIsPrompt(false)
     setDialogProps({
+      error,
       title,
       message,
       finally: () => setShow(false)
@@ -41,6 +55,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
 
   function question({ message, title, accept, refuse }: QuestionProps) {
     setShow(true)
+    setIsPrompt(false)
     setDialogProps({
       isQuestion: true,
       title,
@@ -51,13 +66,33 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  function prompt({ message, refuse, title, type, accept }: PromptProps) {
+    console.log(show)
+    setShow(true)
+    setIsPrompt(true)
+    console.log(show)
+    setDialogProps({
+      isQuestion: true,
+      title,
+      message,
+      accept,
+      refuse,
+      type,
+      finally: () => setShow(false)
+    })
+  }
+
   return (
     <Provider
       value={{
-        alert, question
+        alert, question, prompt
       }}
     >
-      {show && <Dialog {...dialogPorps} />}
+      {show && <>{
+        isPrompt ?
+          <Prompt {...dialogPorps} /> :
+          <Dialog {...dialogPorps} />
+      }</>}
       {children}
     </Provider>
   )

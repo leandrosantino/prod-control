@@ -11,7 +11,9 @@ export function Dialog(props: DialogProps) {
       <Overlay
         onClick={() => props.finally()}
       />
-      <Content>
+      <Content
+        error={props.error ?? false}
+      >
         <h4>{props.title}</h4>
         <p >{props.message}</p>
         {props.isQuestion ?
@@ -24,8 +26,8 @@ export function Dialog(props: DialogProps) {
             >não</button>
             <button
               onClick={() => {
-                props.accept ? props.accept() : null
                 props.finally()
+                props.accept ? props.accept() : null
               }}
             >sim</button>
           </div> :

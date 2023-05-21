@@ -51,10 +51,7 @@ export function Porducts() {
       <Header>
         <Link to='/' >Voltar</Link>
         <Link id='addProd' to='/products/edit' >Adicionar Produtos</Link>
-        <div>
-          <h1>Adler Pelzer Group</h1>
-          <h2>PRODUTOS</h2>
-        </div>
+        <h1>Produtos</h1>
       </Header>
 
       <Main>

@@ -9,6 +9,9 @@ import { ProductionRecord, productionRecordSchema } from '../../utils/schemas';
 import { FaTrash } from 'react-icons/fa'
 import { InputSearch } from '../../components/inputSearch';
 import { InputContent } from '../../components/inputContent';
+import { useDialog } from '../../hooks/useDialog';
+import { z } from 'zod';
+import { api } from '../../services/api';
 
 
 
@@ -38,6 +41,61 @@ export function Record() {
   const [classification, setClassification] = useState('')
   const [ute, setUte] = useState('')
   const [date, setDate] = useState('')
+
+  const dialog = useDialog()
+
+  async function handleDelete() {
+
+    dialog.question({
+      title: 'Atenção!',
+      message: 'Realmente deseja apagar este registro? esta ação não pode ser revertida!',
+
+      async accept() {
+
+        console.log('accept')
+        dialog.prompt({
+          title: 'Autenticação',
+          message: 'Insira a senha para prosseguir!',
+          type: 'password',
+          async accept(value) {
+            try {
+              const authResp = await api.get('/auth', {
+                params: {
+                  password: value
+                }
+              })
+              const { isAuth } = z.object({
+                isAuth: z.boolean()
+              }).parse(authResp.data)
+
+              if (isAuth) {
+
+                dialog.alert({
+                  title: 'Sucesso!',
+                  message: 'O registro foi apagado!',
+                })
+                return
+              }
+
+              dialog.alert({
+                title: 'Erro!',
+                message: 'Senha inválida, tente novamente!',
+                error: true
+              })
+
+            } catch { }
+
+          },
+          refuse() { },
+        })
+
+      },
+      refuse() { },
+    })
+
+
+  }
+
 
   return (
     <Container>
@@ -132,7 +190,9 @@ export function Record() {
                         <td>{entry.product.classification}</td>
                         <td>{entry.amount}</td>
                         <td>
-                          <button>
+                          <button
+                            onClick={() => handleDelete()}
+                          >
                             <FaTrash />
                           </button>
                         </td>

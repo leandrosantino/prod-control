@@ -70,31 +70,68 @@ export function EditPorducts() {
       dialog.question({
         title: 'Atenção!',
         message: 'Realmente deseja salvar as alterações?',
-        async accept() {
-          const apiResponse = await api.post<{
-            error: boolean,
-            msg: string
-          }
-          >(`/products/${id ? 'edit' : 'create'}`,
-            id ?
-              { id, data: parsedProducts } :
-              parsedProducts)
+        accept() {
 
-          setStatus({
-            error: apiResponse.data.error,
-            msg: apiResponse.data.msg
+          dialog.prompt({
+            title: 'Autenticação',
+            message: 'Insira a senha para prosseguir.',
+            type: 'password',
+            async accept(value: string) {
+              try {
+                const authResp = await api.get('/auth', {
+                  params: {
+                    password: value
+                  }
+                })
+                const { isAuth } = z.object({
+                  isAuth: z.boolean()
+                }).parse(authResp.data)
+
+                if (isAuth) {
+                  const apiResponse = await api.post<{
+                    error: boolean,
+                    msg: string
+                  }
+                  >(`/products/${id ? 'edit' : 'create'}`,
+                    id ?
+                      { id, data: parsedProducts } :
+                      parsedProducts)
+
+                  dialog.alert({
+                    title: apiResponse.data.error ? 'Erro ao salvar!' : 'Sucesso!',
+                    message: apiResponse.data.msg,
+                    error: apiResponse.data.error
+                  })
+                  return
+                }
+
+                dialog.alert({
+                  title: 'Erro!',
+                  message: 'Senha inválida, tente novamente!',
+                  error: true
+                })
+              } catch {
+                dialog.alert({
+                  title: 'Falha ao realizar operação!',
+                  message: 'Erro inesperado',
+                  error: true
+                })
+              }
+
+            },
+            refuse() { },
           })
-        },
-        refuse() {
 
-        }
+        },
+        refuse() { }
       })
 
     } catch (error) {
       console.log(error)
-      setStatus({
+      dialog.alert({
+        title: 'Falha ao realizar operação!',
+        message: 'Preencha todos os campos e tente novamente.',
         error: true,
-        msg: 'Falha ao realizar operação!'
       })
     }
   }
@@ -103,20 +140,14 @@ export function EditPorducts() {
     <Container>
       <Header>
         <Link to='/products' >Voltar</Link>
-        <div>
-          <h1>Adler Pelzer Group</h1>
-          <h2>PRODUTOS</h2>
-        </div>
+        <h1>{
+          id ? 'Editar Produto' : 'Adicionar Produto'
+        }</h1>
       </Header>
 
       <Form>
-        <h3>
-          {
-            id ?
-              `Atualizar Produto: ${desc}` :
-              'Adicionar Produto'
-          }
-        </h3>
+
+        {id && <h3>{desc}</h3>}
 
         <InputCase>
           <label>Descrição Operacional:</label>
@@ -195,7 +226,7 @@ export function EditPorducts() {
           />
         </InputCase>
 
-        <Msg error={status.error} >{status.msg}</Msg>
+        {/* <Msg error={status.error} >{status.msg}</Msg> */}
 
 
         <BtCase>

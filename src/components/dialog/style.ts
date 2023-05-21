@@ -15,7 +15,7 @@ export const Overlay = styled.div`
 `
 
 
-export const Content = styled.div`
+export const Content = styled.div<{ error: boolean }>`
   width: 350px;
   height: fit-content;
   background-color: #fff;
@@ -30,6 +30,7 @@ export const Content = styled.div`
   right: 0;
   bottom: 0;
   margin: auto;
+  gap: 12px;
 
   color: ${colors.gray[900]};
 
@@ -37,14 +38,17 @@ export const Content = styled.div`
     font-size: 20px;
     width: 100%;
     height: 25%;
+
   }
 
   p{
     font-size: 14px;
     width: 100%;
     height: 50%;
-    padding: 16px 0px;
+    padding: 4px 0px;
   }
+
+
 
   div{
     width: 100%;
@@ -62,7 +66,7 @@ export const Content = styled.div`
       border-radius: 4px;
 
       &:last-child{
-        background-color: ${colors.blue[500]};
+        background-color: ${({ error }) => error ? 'red' : colors.blue[500]};
       }
 
       &:hover{
@@ -74,4 +78,12 @@ export const Content = styled.div`
   }
 
 
+`
+
+export const PromptInput = styled.input<{ error: boolean }>`
+  width: 100%;
+  border: 1px solid ${({ error }) => error ? 'red' : 'black'};
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 14px;
 `
