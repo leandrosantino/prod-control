@@ -9,6 +9,7 @@ import { Table } from '../../components/table'
 import { Filters } from '../../components/filters'
 import { InputSearch } from '../../components/inputSearch'
 import { InputContent } from '../../components/inputContent'
+import { AiFillEdit } from 'react-icons/ai'
 
 export function Porducts() {
 
@@ -128,7 +129,9 @@ export function Porducts() {
                 <td >{entry.amount}</td>
                 <td >
                   <EditButton>
-                    <Link to={`/products/edit/${entry.id}`}>Editar</Link>
+                    <Link to={`/products/edit/${entry.id}`}>
+                      <AiFillEdit size={20} />
+                    </Link>
                   </EditButton>
                 </td>
               </tr>

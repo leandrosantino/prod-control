@@ -4,7 +4,7 @@ import { Container, Menu } from "./style";
 import { RiProfileLine } from 'react-icons/ri'
 import { BsBoxSeamFill } from 'react-icons/bs'
 import { HiDocumentReport } from 'react-icons/hi'
-import { useDialog } from "../../hooks/useDialog";
+import { IoIosListBox } from 'react-icons/io'
 
 
 export function Home() {
@@ -30,8 +30,12 @@ export function Home() {
           <span>Ver Produtos</span>
           <BsBoxSeamFill size={25} />
         </Link>
+        <Link to='/record' >
+          <span>Registro de Produção</span>
+          <IoIosListBox size={25} />
+        </Link>
         <Link to='/report' >
-          <span>Relatório</span>
+          <span>Relatórios</span>
           <HiDocumentReport size={25} />
         </Link>
 

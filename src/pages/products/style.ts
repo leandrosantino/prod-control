@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { colors } from "../../style/global";
 
 export const Container = styled.div`
   width: 100%;
@@ -16,6 +17,22 @@ export const Container = styled.div`
     }
   }
 
+  td, th{
+
+    width: 220px;
+
+    &:nth-child(n+3){
+      width: 130px;
+      text-align: center;
+    }
+    &:last-child{
+      width: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
 `
 
 export const Main = styled.main`
@@ -29,20 +46,26 @@ export const Main = styled.main`
 
 export const EditButton = styled.div`
   a{
-    background-color: #0078d4;
+    width:  30px;
+    height: 30px;
     border: none;
-    border-radius: 4px;
-    padding: 5px;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    border-radius: 50%;
     text-decoration: none;
-    font-size: 14px;
+    background-color: transparent;
+    color: ${colors.blue[500]};
 
     &:hover{
-        opacity: 0.7;
-      }
-      &:active{
-        opacity: 0.8;
-      }
+      background-color: ${colors.blue[500]};
+      color: #fff;
+
+    }
+    &:active{
+      opacity: 0.8;
+    }
   }
 
 `

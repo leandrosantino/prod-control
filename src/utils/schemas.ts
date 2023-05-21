@@ -27,3 +27,14 @@ export const productSchema = z.object({
 })
 
 export type Product = z.infer<typeof productSchema>
+
+
+export const productionRecordSchema = z.object({
+  id: z.string(),
+  createdAt: z.date().or(z.string()),
+  amount: z.number(),
+  product: productSchema
+})
+
+
+export type ProductionRecord = z.infer<typeof productionRecordSchema>

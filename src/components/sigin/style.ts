@@ -3,13 +3,12 @@ import { colors } from "../../style/global";
 
 
 export const Container = styled.div`
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 30%;
-  height: 30%;
+  height: fit-content;
   background-color: ${colors.gray[200]};
   border-radius: 12px;
   gap: 12px;

@@ -16,17 +16,14 @@ export const InputContent = styled.div`
 
   select{
     padding: 4px 8px;
-    border: none;
     border-radius: 4px;
-
     border: 1px solid ${colors.gray[900]};
   }
 
   input{
-    padding: 4px;
-    border: none;
+    border: 1px solid ${colors.gray[900]};
+    padding: 4px 8px;
     border-radius: 4px;
-    width: 80px;
   }
 
 

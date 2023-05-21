@@ -44,16 +44,6 @@ export const Table = styled.table`
     td, th{
       height: 100%;
       font-size: 12px;
-      width: 220px;
-
-      &:nth-child(n+3){
-        width: 130px;
-        text-align: center;
-      }
-      &:last-child{
-        width: 60px;
-      }
-
 
     }
   }

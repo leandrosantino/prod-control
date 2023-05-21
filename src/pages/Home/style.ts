@@ -4,12 +4,10 @@ import { colors } from "../../style/global";
 
 export const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 72px);
   display: flex;
   justify-content: center;
   align-items: center;
-
-  padding-bottom: 100px;
 
 `
 
