@@ -88,6 +88,7 @@ export const InputContent = styled.div`
 
 `
 
+
 export const EditProduct = styled.div`
   position: fixed;
   z-index: 100;

@@ -1,4 +1,4 @@
-import { Col, Row, Title } from '../../style/global'
+import { Filters } from '../filters'
 import { Table } from '../table'
 import { Container } from './style'
 
@@ -11,6 +11,24 @@ export function ReportList() {
 
   return (
     <Container>
+
+      <Filters>
+
+      </Filters>
+
+      <Table>
+        <thead>
+          <tr>
+            <th>Id</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>kluasghdfoiuhof</td>
+          </tr>
+        </tbody>
+
+      </Table>
 
     </Container>
   )

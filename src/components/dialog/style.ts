@@ -61,6 +61,10 @@ export const Content = styled.div`
       color: #fff;
       border-radius: 4px;
 
+      &:last-child{
+        background-color: ${colors.blue[500]};
+      }
+
       &:hover{
         opacity: .9;
       }

@@ -11,6 +11,7 @@ import config from './config.json'
 import { PrismaClient } from '../database/client'
 
 import { createObjectCsvWriter } from 'csv-writer'
+import console from 'console'
 
 const prisma = new PrismaClient({
   datasources: {
@@ -149,14 +150,39 @@ server.get('/api/tags/getids/:amount', async (request, reply) => {
   }
 })
 
+const productFiltersSchema = z.object({
+  description: z.string(),
+  technicalDescription: z.string(),
+  ute: z.string(),
+  classification: z.string(),
+})
+
 server.get('/api/products', async (request, reply) => {
   try {
-    return await prisma.product.findMany({
+
+    let where = {}
+    try {
+      const filters = productFiltersSchema.parse(request.query)
+      where = {
+        description: {
+          contains: filters.description
+        },
+        ...filters.classification === '' ? {} : { classification: filters.classification },
+        ...filters.ute === '' ? {} : { ute: filters.ute },
+      }
+    } catch { }
+
+    const products = await prisma.product.findMany({
+      where,
       orderBy: {
         ute: 'asc'
       }
     })
+
+    return products
+
   } catch (error) {
+    console.log(error)
     throw error
   }
 })

@@ -37,6 +37,13 @@ export const InputCase = styled.div`
     padding: 3px 5px;
     width: 150px;
   }
+
+  select{
+    font-size: 14px;
+    padding: 3px 5px;
+    width: 150px;
+  }
+
 `
 
 export const BtCase = styled.div`

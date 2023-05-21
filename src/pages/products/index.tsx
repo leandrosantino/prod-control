@@ -1,28 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { api } from '../../services/api'
-import { Product, productSchema } from '../../utils/schemas'
+import { Product, productFiltersSchema, productSchema } from '../../utils/schemas'
 import { Link } from 'react-router-dom'
-import { Container, EditButton } from './style'
-import { Col, Row, Title, Table } from '../../style/global'
+import { Container, EditButton, Main } from './style'
 import { Header } from '../../components/header'
+import { Table } from '../../components/table'
+import { Filters } from '../../components/filters'
+import { InputSearch } from '../../components/inputSearch'
+import { InputContent } from '../../components/inputContent'
 
 export function Porducts() {
 
   const [products, setProducts] = useState<Product[]>()
+  const [description, setDescription] = useState('')
+  const [technicalDescription, setTechnicalDescription] = useState('')
+  const [classification, setClassification] = useState('')
+  const [ute, setUte] = useState('')
 
   useEffect(() => {
     (async () => {
-      const apiResponse = await api.get(`/products`)
-      console.log(apiResponse.data)
-      setProducts(z.array(productSchema).parse(apiResponse.data))
+      try {
+
+        const filterValues = productFiltersSchema.parse({
+          description,
+          technicalDescription,
+          classification,
+          ute,
+        })
+
+        const apiResponse = await api.get(`/products`, {
+          params: { ...filterValues }
+        })
+
+        const data = z.array(productSchema).parse(apiResponse.data)
+        setProducts(data)
+      } catch {
+
+      }
+
     })()
-  }, [])
+  }, [description, technicalDescription, classification, ute])
+
 
 
   return (
     <Container>
-
 
       <Header>
         <Link to='/' >Voltar</Link>
@@ -33,36 +56,87 @@ export function Porducts() {
         </div>
       </Header>
 
-      <Title>
-        <Col style={{ width: '200px' }} >Descrição</Col>
-        <Col style={{ width: '200px' }} >Descrição Técnica</Col>
-        <Col >Projeto</Col>
-        <Col >UTE</Col>
-        <Col >Classificação</Col>
-        <Col >Part Number</Col>
-        <Col >Código SAP</Col>
-        <Col >Quantidade</Col>
-        <Col style={{ width: '70px' }} > ---- </Col>
-      </Title>
-      <Table>
-        {products?.map(entry => (
-          <Row key={entry.id} >
-            <Col style={{ width: '200px' }} >{entry.description}</Col>
-            <Col style={{ width: '200px' }} >{entry.technicalDescription}</Col>
-            <Col >{entry.projectNumber}</Col>
-            <Col >{entry.ute}</Col>
-            <Col >{entry.classification}</Col>
-            <Col >{entry.partNumber}</Col>
-            <Col >{entry.sapCode}</Col>
-            <Col >{entry.amount}</Col>
-            <Col style={{ width: '70px' }} >
-              <EditButton>
-                <Link to={`/products/edit/${entry.id}`}>Editar</Link>
-              </EditButton>
-            </Col>
-          </Row>
-        ))}
-      </Table>
+      <Main>
+
+        <Filters>
+
+          <InputSearch
+            label='Descrição Operacional:'
+            value={description}
+            onChange={setDescription}
+          />
+
+          <InputSearch
+            label='Descrição Técnica:'
+            value={technicalDescription}
+            onChange={setTechnicalDescription}
+          />
+
+          <InputContent>
+            <label>Classificação:</label>
+            <select
+              value={classification}
+              onChange={(e) => setClassification(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="WIP">WIP</option>
+              <option value="ACABADO">ACABADO</option>
+            </select>
+          </InputContent>
+
+          <InputContent>
+            <label>UTE:</label>
+            <select
+              value={ute}
+              onChange={(e) => setUte(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="UTE-1">UTE-1</option>
+              <option value="UTE-2">UTE-2</option>
+              <option value="UTE-3">UTE-3</option>
+              <option value="UTE-4">UTE-4</option>
+              <option value="UTE-5">UTE-5</option>
+            </select>
+          </InputContent>
+
+        </Filters>
+
+        <Table>
+          <thead>
+            <tr>
+              <th >Descrição</th>
+              <th >Descrição Técnica</th>
+              <th >Projeto</th>
+              <th >UTE</th>
+              <th >Classificação</th>
+              <th >Part Number</th>
+              <th >Código SAP</th>
+              <th >Quantidade</th>
+              <th > ---- </th>
+            </tr>
+          </thead>
+          <tbody>
+            {products?.map(entry => (
+              <tr key={entry.id} >
+                <td >{entry.description}</td>
+                <td >{entry.technicalDescription}</td>
+                <td >{entry.projectNumber}</td>
+                <td >{entry.ute}</td>
+                <td >{entry.classification}</td>
+                <td >{entry.partNumber}</td>
+                <td >{entry.sapCode}</td>
+                <td >{entry.amount}</td>
+                <td >
+                  <EditButton>
+                    <Link to={`/products/edit/${entry.id}`}>Editar</Link>
+                  </EditButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Main>
+
 
 
     </Container>

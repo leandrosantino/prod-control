@@ -1,22 +1,30 @@
 import styled from "styled-components";
 
-
-
 export const Container = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 100px;
 
   header{
+    position: inherit;
     #addProd{
       left: auto;
       right: 10px;
     }
   }
 
+`
+
+export const Main = styled.main`
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 72px);
 `
 
 export const EditButton = styled.div`
@@ -38,5 +46,3 @@ export const EditButton = styled.div`
   }
 
 `
-
-

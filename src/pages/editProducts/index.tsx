@@ -5,8 +5,11 @@ import { api } from '../../services/api'
 import { z } from 'zod'
 import { productCreateSchema } from '../../utils/schemas'
 import { Header } from '../../components/header'
+import { useDialog } from '../../hooks/useDialog'
 
 export function EditPorducts() {
+
+  const dialog = useDialog()
 
   const { id } = useParams<{ id: string }>()
 
@@ -64,18 +67,27 @@ export function EditPorducts() {
         technicalDescription,
       })
 
-      const apiResponse = await api.post<{
-        error: boolean,
-        msg: string
-      }
-      >(`/products/${id ? 'edit' : 'create'}`,
-        id ?
-          { id, data: parsedProducts } :
-          parsedProducts)
+      dialog.question({
+        title: 'Atenção!',
+        message: 'Realmente deseja salvar as alterações?',
+        async accept() {
+          const apiResponse = await api.post<{
+            error: boolean,
+            msg: string
+          }
+          >(`/products/${id ? 'edit' : 'create'}`,
+            id ?
+              { id, data: parsedProducts } :
+              parsedProducts)
 
-      setStatus({
-        error: apiResponse.data.error,
-        msg: apiResponse.data.msg
+          setStatus({
+            error: apiResponse.data.error,
+            msg: apiResponse.data.msg
+          })
+        },
+        refuse() {
+
+        }
       })
 
     } catch (error) {
@@ -128,18 +140,27 @@ export function EditPorducts() {
 
         <InputCase>
           <label>Classificação:</label>
-          <input type="text"
+          <select
             value={classification}
             onChange={(e) => setClassification(e.target.value)}
-          />
+          >
+            <option value="WIP">WIP</option>
+            <option value="ACABADO">ACABADO</option>
+          </select>
         </InputCase>
 
         <InputCase>
           <label>UTE:</label>
-          <input type="text"
+          <select
             value={ute}
             onChange={(e) => setUte(e.target.value)}
-          />
+          >
+            <option value="UTE-1">UTE-1</option>
+            <option value="UTE-2">UTE-2</option>
+            <option value="UTE-3">UTE-3</option>
+            <option value="UTE-4">UTE-4</option>
+            <option value="UTE-5">UTE-5</option>
+          </select>
         </InputCase>
 
         <InputCase>

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 export function Report() {
 
-  const [isAuth, setIsAuth] = useState<boolean>(false)
+  const [isAuth, setIsAuth] = useState<boolean>(true)
 
   return (
     <Container>

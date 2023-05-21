@@ -3,6 +3,12 @@ import { z } from 'zod'
 
 export const idListSchema = z.array(z.string())
 
+export const productFiltersSchema = z.object({
+  description: z.string(),
+  technicalDescription: z.string(),
+  ute: z.string(),
+  classification: z.string(),
+})
 
 export const productCreateSchema = z.object({
   description: z.string(),
