@@ -36,7 +36,7 @@ export type ProductionRecord = {
   id: string
   createdAt: Date
   productId: string
-  amount: number | null
+  amount: number
 }
 
 
@@ -2013,7 +2013,7 @@ export namespace Prisma {
     id: string
     createdAt: Date
     productId: string
-    amount: number | null
+    amount: number
     _count: ProductionRecordCountAggregateOutputType | null
     _avg: ProductionRecordAvgAggregateOutputType | null
     _sum: ProductionRecordSumAggregateOutputType | null
@@ -2901,7 +2901,7 @@ export namespace Prisma {
     id?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     productId?: StringFilter | string
-    amount?: IntNullableFilter | number | null
+    amount?: IntFilter | number
     product?: XOR<ProductRelationFilter, ProductWhereInput>
   }
 
@@ -2936,7 +2936,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter | string
     createdAt?: DateTimeWithAggregatesFilter | Date | string
     productId?: StringWithAggregatesFilter | string
-    amount?: IntNullableWithAggregatesFilter | number | null
+    amount?: IntWithAggregatesFilter | number
   }
 
   export type ProductCreateInput = {
@@ -3018,7 +3018,7 @@ export namespace Prisma {
   export type ProductionRecordCreateInput = {
     id: string
     createdAt?: Date | string
-    amount?: number | null
+    amount: number
     product: ProductCreateNestedOneWithoutProductionRecordInput
   }
 
@@ -3026,13 +3026,13 @@ export namespace Prisma {
     id: string
     createdAt?: Date | string
     productId: string
-    amount?: number | null
+    amount: number
   }
 
   export type ProductionRecordUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
     product?: ProductUpdateOneRequiredWithoutProductionRecordNestedInput
   }
 
@@ -3040,20 +3040,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productId?: StringFieldUpdateOperationsInput | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductionRecordUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductionRecordUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productId?: StringFieldUpdateOperationsInput | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type StringFilter = {
@@ -3179,17 +3179,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter | Date | string
   }
 
-  export type IntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
   export type ProductRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
@@ -3236,22 +3225,6 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedDateTimeFilter
     _max?: NestedDateTimeFilter
-  }
-
-  export type IntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
   }
 
   export type ProductionRecordCreateNestedManyWithoutProductInput = {
@@ -3312,14 +3285,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type ProductUpdateOneRequiredWithoutProductionRecordNestedInput = {
@@ -3410,17 +3375,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter | Date | string
   }
 
-  export type NestedIntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
   export type NestedDateTimeWithAggregatesFilter = {
     equals?: Date | string
     in?: Enumerable<Date> | Enumerable<string>
@@ -3435,43 +3389,16 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
-  export type NestedIntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
-  }
-
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
-  }
-
   export type ProductionRecordCreateWithoutProductInput = {
     id: string
     createdAt?: Date | string
-    amount?: number | null
+    amount: number
   }
 
   export type ProductionRecordUncheckedCreateWithoutProductInput = {
     id: string
     createdAt?: Date | string
-    amount?: number | null
+    amount: number
   }
 
   export type ProductionRecordCreateOrConnectWithoutProductInput = {
@@ -3502,7 +3429,7 @@ export namespace Prisma {
     id?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     productId?: StringFilter | string
-    amount?: IntNullableFilter | number | null
+    amount?: IntFilter | number
   }
 
   export type ProductCreateWithoutProductionRecordInput = {
@@ -3566,19 +3493,19 @@ export namespace Prisma {
   export type ProductionRecordUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductionRecordUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductionRecordUncheckedUpdateManyWithoutProductionRecordInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    amount?: IntFieldUpdateOperationsInput | number
   }
 
 

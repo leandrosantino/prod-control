@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Main } from './style';
 import { Sigin } from '../../components/sigin';
 import { Header } from '../../components/header';
@@ -18,24 +18,7 @@ import { api } from '../../services/api';
 export function Record() {
 
   const [isAuth, setIsAuth] = useState<boolean>(true)
-  const [productionRecord, setProductionRecor] = useState<ProductionRecord[]>([
-    {
-      id: 'clhhreaft0000m5akfne6m1zd',
-      amount: 1,
-      createdAt: new Date(),
-      product: {
-        id: 'çudhfpvoçisrng',
-        amount: 1,
-        classification: 'WIP',
-        description: 'LIBERADO FRONT FENDER Esquerdo (LH) 521',
-        technicalDescription: '519547723 ISOLAMENTO DO PARALAMA ESQ 521',
-        partNumber: '21365874651',
-        sapCode: '54568586',
-        projectNumber: '226',
-        ute: 'UTE-1'
-      }
-    }
-  ])
+  const [productionRecord, setProductionRecord] = useState<ProductionRecord[]>([])
   const [description, setDescription] = useState('')
   const [technicalDescription, setTechnicalDescription] = useState('')
   const [classification, setClassification] = useState('')
@@ -43,6 +26,22 @@ export function Record() {
   const [date, setDate] = useState('')
 
   const dialog = useDialog()
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const apiResponse = await api.get('/productionRecord', {
+          params: {
+            description, technicalDescription, classification, ute, date
+          }
+        })
+        setProductionRecord(z.array(productionRecordSchema).parse(apiResponse.data))
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [description, technicalDescription, classification, ute, date])
+
 
   async function handleDelete() {
 
@@ -181,7 +180,7 @@ export function Record() {
                 <tbody>
                   {
                     productionRecord.map(entry => (
-                      <tr>
+                      <tr key={entry.id}>
                         <td>{entry.id}</td>
                         <td>{entry.product.description}</td>
                         <td>{entry.product.technicalDescription}</td>

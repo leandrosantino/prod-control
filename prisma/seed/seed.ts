@@ -1,4 +1,4 @@
-import { PrismaClient } from '../database/client'
+import { PrismaClient } from '../../database/client'
 import xlsx from 'node-xlsx'
 import fs from 'fs'
 import path from 'path'
@@ -18,7 +18,6 @@ const productSchema = z.object({
 })
 
 type Product = z.input<typeof productSchema>
-
 
 
 (async () => {

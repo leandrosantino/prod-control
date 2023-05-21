@@ -33,6 +33,7 @@ export const productionRecordSchema = z.object({
   id: z.string(),
   createdAt: z.date().or(z.string()),
   amount: z.number(),
+  productId: z.string(),
   product: productSchema
 })
 

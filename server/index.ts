@@ -167,6 +167,9 @@ server.get('/api/products', async (request, reply) => {
         description: {
           contains: filters.description
         },
+        technicalDescription: {
+          contains: filters.technicalDescription
+        },
         ...filters.classification === '' ? {} : { classification: filters.classification },
         ...filters.ute === '' ? {} : { ute: filters.ute },
       }
@@ -198,9 +201,10 @@ server.get('/api/gethost', async () => {
 server.get('/reg', async (request, reply) => {
   if (config.enable_qrcode_scan) {
     try {
-      const { item, tag } = z.object({
+      const { item, tag, amount } = z.object({
         item: z.string(),
-        tag: z.string()
+        tag: z.string(),
+        amount: z.number(),
       }).parse(request.query)
 
       const product = await prisma.product.findUnique({
@@ -212,7 +216,8 @@ server.get('/reg', async (request, reply) => {
           await prisma.productionRecord.create({
             data: {
               id: tag,
-              productId: product?.id
+              productId: product?.id,
+              amount
             }
           })
           return { success: true, msg: 'Registrado com Sucesso!' }
@@ -374,6 +379,48 @@ server.get('/api/auth', async (request, reply) => {
       msg: 'Falha interna do servidor'
     }).status(500)
 
+  }
+})
+
+const recordFiltersSchema = z.object({
+  ...productFiltersSchema.shape,
+  date: z.date().or(z.string())
+})
+
+server.get('/api/productionRecord', async (request, reply) => {
+  try {
+
+    const filters = recordFiltersSchema.parse(request.query)
+
+    const record = await prisma.productionRecord.findMany({
+      where: {
+        product: {
+          description: {
+            contains: filters.description
+          },
+          technicalDescription: {
+            contains: filters.technicalDescription
+          },
+          ...filters.classification === '' ? {} : { classification: filters.classification },
+          ...filters.ute === '' ? {} : { ute: filters.ute },
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        product: true,
+      }
+    })
+
+    return record
+
+  } catch (error) {
+    console.log(error)
+    reply.status(500).send({
+      error: true,
+      msg: 'Erro interno do servidor'
+    })
   }
 })
 

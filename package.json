@@ -12,7 +12,7 @@
     "react.eject": "react-scripts eject",
     "dist": "npm run react.build && npm run server.build",
     "prod": "node build/index",
-    "db.seed": "tsx ./prisma/seed.ts",
+    "db.seed": "tsx ./prisma/seed/seed.ts",
     "db.migrate": "npx prisma migrate dev",
     "db.studio": "npx prisma studio",
     "deploy": "tsx deploy.ts",

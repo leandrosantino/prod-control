@@ -1,4 +1,4 @@
-import { PrismaClient } from '../database/client'
+import { PrismaClient } from '../../database/client'
 const prisma = new PrismaClient();
 
 import AutoDetectDecoderStream from 'autodetect-decoder-stream'
