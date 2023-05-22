@@ -5,6 +5,7 @@ import { RiProfileLine } from 'react-icons/ri'
 import { BsBoxSeamFill } from 'react-icons/bs'
 import { HiDocumentReport } from 'react-icons/hi'
 import { IoIosListBox } from 'react-icons/io'
+import { MdQrCodeScanner } from 'react-icons/md'
 
 
 export function Home() {
@@ -25,6 +26,10 @@ export function Home() {
         <Link to='/tagGenerator' >
           <span>Gerar Etiquetas</span>
           <RiProfileLine size={25} />
+        </Link>
+        <Link to='/registerTag' >
+          <span>Registrar Etiquetas</span>
+          <MdQrCodeScanner size={25} />
         </Link>
         <Link to='/products' >
           <span>Ver Produtos</span>

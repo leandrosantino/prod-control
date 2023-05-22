@@ -88,6 +88,24 @@ export const InputContent = styled.div`
 
 `
 
+export const CheckContent = styled.div`
+
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center  ;
+  gap: 4px;
+  padding-bottom: 4px;
+  padding-top: 32px;
+
+  margin: 0 12px;
+
+  label{
+    font-size: 16px;
+  }
+
+`
+
 
 export const EditProduct = styled.div`
   position: fixed;

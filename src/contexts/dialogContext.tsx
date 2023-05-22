@@ -67,10 +67,8 @@ export function DialogProvider({ children }: { children: ReactNode }) {
   }
 
   function prompt({ message, refuse, title, type, accept }: PromptProps) {
-    console.log(show)
     setShow(true)
     setIsPrompt(true)
-    console.log(show)
     setDialogProps({
       isQuestion: true,
       title,

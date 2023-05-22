@@ -3,6 +3,7 @@ import xlsx from 'node-xlsx'
 import fs from 'fs'
 import path from 'path'
 import { z } from 'zod'
+import { createId as cuid } from '@paralleldrive/cuid2'
 
 const prisma = new PrismaClient();
 
@@ -49,9 +50,19 @@ type Product = z.input<typeof productSchema>
 
     for await (let product of products) {
       try {
-        await prisma.product.create({
+        const prod = await prisma.product.create({
           data: product
         })
+
+        await prisma.productionRecord.create({
+          data: {
+            amount: prod.amount,
+            id: cuid(),
+            createdAt: new Date(),
+            productId: prod.id
+          }
+        })
+
         console.log(`Success => ${product.description}`)
       } catch (error) {
         console.log(`Error => ${product.description} -- ${error}`)

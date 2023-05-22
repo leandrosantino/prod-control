@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Container, Main } from './style';
 import { Sigin } from '../../components/sigin';
 import { Header } from '../../components/header';
@@ -13,12 +13,10 @@ import { useDialog } from '../../hooks/useDialog';
 import { z } from 'zod';
 import { api } from '../../services/api';
 
-
-
 export function Record() {
 
-  const [isAuth, setIsAuth] = useState<boolean>(true)
-  const [productionRecord, setProductionRecord] = useState<ProductionRecord[]>([])
+  const [isAuth, setIsAuth] = useState<boolean>(false)
+  const [productionRecord, setProductionRecord] = useState<ProductionRecord[]>()
   const [description, setDescription] = useState('')
   const [technicalDescription, setTechnicalDescription] = useState('')
   const [classification, setClassification] = useState('')
@@ -27,31 +25,74 @@ export function Record() {
 
   const dialog = useDialog()
 
+  const cursor = useRef<string>('')
+  const page = useRef<number>(1)
+
   useEffect(() => {
-    (async () => {
-      try {
-        const apiResponse = await api.get('/productionRecord', {
-          params: {
-            description, technicalDescription, classification, ute, date
-          }
-        })
-        setProductionRecord(z.array(productionRecordSchema).parse(apiResponse.data))
-      } catch (error) {
-        console.log(error)
+
+    setProductionRecord([])
+    cursor.current = ''
+    page.current = 1
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        getRecords()
+          .then(records => {
+            setProductionRecord(state => [...state ? state : [], ...records])
+            console.log(productionRecord?.length)
+          })
       }
-    })()
-  }, [description, technicalDescription, classification, ute, date])
+    })
+    const sentinel = document.querySelector('#sentinel')
+    sentinel && intersectionObserver.observe(sentinel)
+    return () => intersectionObserver.disconnect()
+
+  }, [description, technicalDescription, classification, ute, date, isAuth])
 
 
-  async function handleDelete() {
+  useEffect(() => {
+    if (productionRecord) {
+      const id = productionRecord[productionRecord.length - 1]?.id
+      if (id) cursor.current = id
+    }
+    if (cursor.current) {
+      page.current = page.current + 1
+      console.log(cursor.current, page.current)
+    }
+  }, [productionRecord])
+
+  function loadRecords() {
+    setProductionRecord([])
+    cursor.current = ''
+    page.current = 1
+    getRecords()
+      .then(records => {
+        setProductionRecord(state => [...state ? state : [], ...records])
+        console.log(productionRecord?.length)
+      })
+  }
+
+  async function getRecords() {
+    try {
+      const apiResponse = await api.get('/productionRecord', {
+        params: {
+          cursor: cursor.current, page: page.current,
+          description, technicalDescription, classification, ute, date
+        }
+      })
+      return z.array(productionRecordSchema).parse(apiResponse.data)
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  async function handleDelete(id: string) {
 
     dialog.question({
       title: 'Atenção!',
       message: 'Realmente deseja apagar este registro? esta ação não pode ser revertida!',
 
       async accept() {
-
-        console.log('accept')
         dialog.prompt({
           title: 'Autenticação',
           message: 'Insira a senha para prosseguir!',
@@ -69,10 +110,23 @@ export function Record() {
 
               if (isAuth) {
 
+                const { error, msg } = z.object({
+                  error: z.boolean(),
+                  msg: z.string()
+                }).parse((await api.delete('/productionRecord', {
+                  params: { id }
+                })).data)
+
                 dialog.alert({
-                  title: 'Sucesso!',
-                  message: 'O registro foi apagado!',
+                  title: error ? 'Erro!' : 'Sucesso!',
+                  message: msg,
+                  error
                 })
+
+                if (!error) {
+                  loadRecords()
+                }
+
                 return
               }
 
@@ -82,7 +136,14 @@ export function Record() {
                 error: true
               })
 
-            } catch { }
+            } catch (error) {
+              console.log(error)
+              dialog.alert({
+                title: 'Falha ao realizar a operação!',
+                message: 'Erro inesperado!',
+                error: true
+              })
+            }
 
           },
           refuse() { },
@@ -179,7 +240,8 @@ export function Record() {
                 </thead>
                 <tbody>
                   {
-                    productionRecord.map(entry => (
+                    productionRecord?.map(entry => (
+
                       <tr key={entry.id}>
                         <td>{entry.id}</td>
                         <td>{entry.product.description}</td>
@@ -190,14 +252,16 @@ export function Record() {
                         <td>{entry.amount}</td>
                         <td>
                           <button
-                            onClick={() => handleDelete()}
+                            onClick={() => handleDelete(entry.id)}
                           >
                             <FaTrash />
                           </button>
                         </td>
                       </tr>
+
                     ))
                   }
+                  <span id='sentinel' ></span>
                 </tbody>
 
               </Table>

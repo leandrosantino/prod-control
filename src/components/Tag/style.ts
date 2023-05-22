@@ -125,6 +125,7 @@ export const Container = styled.div`
   padding: 4px;
   text-align: center;
   font-size: 46px;
+  min-height: 66px;
   font-weight: 700;
 }
 

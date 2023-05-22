@@ -6,11 +6,12 @@ import { Container, Content } from './style'
 interface Props {
   id: string;
   product: Product;
+  isFractional: boolean;
 }
 
 //`http://${host}:3333/reg?item=${product.id}&tag=${id}`
 
-export default function Tag({ id, product }: Props) {
+export default function Tag({ id, product, isFractional }: Props) {
 
 
   const qrcode = (
@@ -19,7 +20,8 @@ export default function Tag({ id, product }: Props) {
         id="qrCode"
         value={JSON.stringify({
           productId: product?.id,
-          tagId: id
+          tagId: id,
+          amount: isFractional ? 0 : product?.amount
         })}
         size={240}
         fgColor='#002060'
@@ -62,7 +64,7 @@ export default function Tag({ id, product }: Props) {
 
               <div className='label' >QUANTIDADE:</div>
               <div className='infoContent'>
-                {product?.amount}
+                {isFractional ? '' : product?.amount}
               </div>
 
               <div className='label' >MODELO:</div>
@@ -138,7 +140,7 @@ export default function Tag({ id, product }: Props) {
 
               <div className='label' >QUANTIDADE:</div>
               <div className='infoContent2 colorBlue'>
-                {product?.amount}
+                {isFractional ? '' : product?.amount}
               </div>
 
               <div className='label' >MODELO:</div>
