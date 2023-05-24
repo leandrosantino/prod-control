@@ -198,13 +198,13 @@ server.get('/api/gethost', async () => {
   }
 })
 
-server.get('/reg', async (request, reply) => {
+server.get('/api/reg', async (request, reply) => {
   if (config.enable_qrcode_scan) {
     try {
       const { item, tag, amount } = z.object({
         item: z.string(),
         tag: z.string(),
-        amount: z.number(),
+        amount: z.string().transform(val => Number(val)),
       }).parse(request.query)
 
       const product = await prisma.product.findUnique({

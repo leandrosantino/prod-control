@@ -246,7 +246,7 @@ export function Record() {
                         <td>{entry.id}</td>
                         <td>{entry.product.description}</td>
                         <td>{entry.product.technicalDescription}</td>
-                        <td>{entry.createdAt.toLocaleString()}</td>
+                        <td>{new Date(entry.createdAt).toLocaleString()}</td>
                         <td>{entry.product.ute}</td>
                         <td>{entry.product.classification}</td>
                         <td>{entry.amount}</td>
