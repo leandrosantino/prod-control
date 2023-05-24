@@ -4,14 +4,72 @@ import { Container } from "./style";
 import { InputContent } from "../../components/inputContent";
 import { useState } from "react";
 import { z } from "zod";
+import { useDialog } from "../../hooks/useDialog";
+import { api } from "../../services/api";
+import fileDownload from 'js-file-download'
 
 export function Report() {
 
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+  const [status, setStatus] = useState({
+    error: false,
+    msg: ''
+  })
+  const dialog = useDialog()
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    try {
 
+      if (from != '' && to != '') {
+        setStatus({
+          error: false,
+          msg: 'Montando o relatótio...'
+        })
+
+        const response = await api.get('/report', {
+          params: {
+            from, to
+          },
+          responseType: 'blob'
+        })
+
+        if (!response.data.error) {
+
+          fileDownload(response.data, 'report.xlsx')
+          console.log(response)
+
+          dialog.alert({
+            title: 'Sucesso!',
+            message: 'O relatório está pronto!',
+          })
+
+          setStatus({
+            error: false,
+            msg: ''
+          })
+
+          return
+
+        }
+
+        throw new Error('failed to generate report')
+      }
+
+      dialog.alert({
+        title: 'Erro!',
+        message: 'Preencha todos os campos para prosseguir!',
+        error: true
+      })
+
+    } catch (error) {
+      console.log(error)
+      dialog.alert({
+        title: 'Erro!',
+        message: 'Falha ao gerar relatório.',
+        error: true,
+      })
+    }
 
   }
 
@@ -29,6 +87,7 @@ export function Report() {
         <form
           onSubmit={(e) => {
             e.preventDefault()
+            handleSubmit()
           }}
         >
           <InputContent>
@@ -55,6 +114,8 @@ export function Report() {
             Gerar Relatório
           </button>
         </form>
+
+        <h4>{status.msg}</h4>
 
       </Container>
     </>

@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../services/prisma'
 import { getRecordsInputSchema } from '../utils/schemas'
+import { dateStringToObj } from '../utils/dateTools'
 
 
 export async function recordsRoutes(server: FastifyInstance) {
@@ -40,17 +41,13 @@ export async function recordsRoutes(server: FastifyInstance) {
 
       let createdAt = {}
 
-      if (/\d{4}-\d{2}-\d{2}/.test(filters.date)) {
-        const { day, month, year } = (() => {
-          const date = filters.date.split('-').map(entry => Number(entry))
-          return { day: date[2], month: date[1], year: date[0] }
-        })();
-
+      try {
+        const { day, month, year } = dateStringToObj(filters.date)
         createdAt = {
           gte: new Date(year, month - 1, day, 0, 0, 0).toISOString(),
           lte: new Date(year, month - 1, day, 23, 59, 59).toISOString(),
         }
-      }
+      } catch { }
 
       const { cursor, page } = filters
 
@@ -59,6 +56,9 @@ export async function recordsRoutes(server: FastifyInstance) {
         take: 15,
         ...page === 1 ? {} : { cursor: { id: cursor } },
         where: {
+          id: {
+            contains: filters.id
+          },
           product: {
             description: {
               contains: filters.description

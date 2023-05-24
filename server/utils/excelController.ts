@@ -2,7 +2,24 @@ import { createObjectCsvWriter } from "csv-writer"
 import path from "path"
 import config from "../config.json"
 import { prisma } from "../services/prisma"
-import { getRotationFromDate } from "./getRotationFromDate"
+import { getRotationFromDate } from "./dateTools"
+import { ProductionRecordType } from "./schemas"
+import xlsx from 'node-xlsx';
+
+export function createWorksheetBuffer(data: ProductionRecordType[]) {
+
+  const val = [
+    [1, 2, 3],
+    [true, false, null, 'sheetjs'],
+    ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'],
+    ['baz', null, 'qux'],
+  ];
+
+  const buffer = xlsx.build([{ name: 'mySheetName', data: val, options: {} }],);
+
+  return buffer
+
+}
 
 
 export async function csvWriter(day: number, month: number, year: number) {

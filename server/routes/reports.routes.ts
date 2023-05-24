@@ -1,32 +1,39 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { csvWriter } from '../utils/excelController'
+import { createWorksheetBuffer, csvWriter } from '../utils/excelController'
+import { productionRecordSchema, reportInfoToGenerateSchema } from '../utils/schemas'
+import { prisma } from '../services/prisma'
 
 
 export async function reportsRoutes(server: FastifyInstance) {
 
   server.get('/api/report', async (request, reply) => {
     try {
-      return reply.view('report.ejs', { msg: '' })
-    } catch (error) {
-      throw error
-    }
-  })
+      const {
+        from, to
+      } = reportInfoToGenerateSchema.parse(request.query)
 
-  server.get('/api/report/generate', async (request, reply) => {
-    try {
+      const reports = await prisma.productionRecord.findMany({
+        where: {
+          createdAt: {
+            gte: new Date(from.year, from.month - 1, from.day, 0, 0, 0).toISOString(),
+            lte: new Date(to.year, to.month - 1, to.day, 23, 59, 59).toISOString(),
+          }
+        },
+        include: {
+          product: true
+        }
+      })
 
-      const { day, month, year } = z.object({
-        day: z.string().transform(val => Number(val)),
-        month: z.string().transform(val => Number(val)),
-        year: z.string().transform(val => Number(val))
-      }).parse(request.query)
 
-      await csvWriter(day, month, year)
-      return { msg: `Relatorio do dia ${new Date(year, month - 1, day).toLocaleDateString()} gerado com sucesso!` }
+      const worksheet = createWorksheetBuffer(z.array(productionRecordSchema).parse(reports))
+
+      return reply.send(worksheet).type('application/xls').code(200)
+
+      // return { msg: `Relatorio gerado com sucesso!` }
     } catch (error) {
       console.log(error)
-      return { msg: `Erro ao gerar relatório!` }
+      return reply.code(500).send({ msg: `Erro ao gerar relatório!`, error: true })
     }
   })
 
