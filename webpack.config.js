@@ -13,12 +13,12 @@ module.exports = {
   },
   target: 'node',
   externals: [
-    function ({ request }, callback) {
-      if (request.includes('../database/client')) {
-        return callback(null, 'commonjs ' + request);
-      }
-      callback();
-    },
+    // function ({ request }, callback) {
+    //   if (request.includes('../database/client')) {
+    //     return callback(null, 'commonjs ' + request);
+    //   }
+    //   callback();
+    // },
     function ({ request }, callback) {
       if (request.includes('./config.json')) {
         return callback(null, 'commonjs ' + request);
