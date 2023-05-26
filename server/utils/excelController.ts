@@ -5,17 +5,91 @@ import { prisma } from "../services/prisma"
 import { getRotationFromDate } from "./dateTools"
 import { ProductionRecordType } from "./schemas"
 import xlsx from 'node-xlsx';
+import fs from 'fs'
 
-export function createWorksheetBuffer(data: ProductionRecordType[]) {
+export function createWorksheetBuffer(data: ProductionRecordType[], name: string) {
 
-  const val = [
-    [1, 2, 3],
-    [true, false, null, 'sheetjs'],
-    ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'],
-    ['baz', null, 'qux'],
-  ];
+  const detailed: any[][] = [
+    [
+      'Id da Etiqueta',
+      'Data',
+      'Hora',
+      'Id do Produto',
+      'Descrição Operacional',
+      'Descriçãodo Técnica',
+      'Classificação',
+      'Part Number',
+      'Codigo Sap',
+      'Projeto',
+      'Quant.',
+      'Turno',
 
-  const buffer = xlsx.build([{ name: 'mySheetName', data: val, options: {} }],);
+    ]
+  ]
+
+  const productsTemp: any = {}
+  const resumeTotal: any = {}
+
+  data.forEach(entry => {
+    productsTemp[entry.productId] = {
+      ...entry.product
+    }
+
+    resumeTotal[entry.productId] = resumeTotal[entry.productId] ?
+      resumeTotal[entry.productId] + entry.amount : entry.amount
+
+
+    detailed.push([
+      entry.id,
+      new Date(entry.createdAt).toLocaleDateString(),
+      new Date(entry.createdAt).toLocaleTimeString(),
+      entry.product.id,
+      entry.product.description,
+      entry.product.technicalDescription,
+      entry.product.classification,
+      entry.product.partNumber,
+      entry.product.sapCode,
+      entry.product.projectNumber,
+      entry.amount,
+      getRotationFromDate(new Date(entry.createdAt))
+    ])
+  })
+
+  const resume: any[][] = [
+    [
+      'Id do Produto',
+      'Descrição Operacional',
+      'Descriçãodo Técnica',
+      'Classificação',
+      'Part Number',
+      'Codigo Sap',
+      'Projeto',
+      'Total',
+    ]
+  ]
+
+  Object.keys(productsTemp).forEach(key => {
+    const product = productsTemp[key]
+    resume.push([
+      product.id,
+      product.description,
+      product.technicalDescription,
+      product.classification,
+      product.partNumber,
+      product.sapCode,
+      product.projectNumber,
+      resumeTotal[product.id],
+    ])
+  })
+
+  const buffer = xlsx.build([
+    { name: 'Detalhado', data: detailed, options: {} },
+    { name: 'Resumido', data: resume, options: {} },
+  ]);
+
+  if (config.save_report) {
+    fs.writeFile(path.join(config.report_path, name), buffer, () => { })
+  }
 
   return buffer
 

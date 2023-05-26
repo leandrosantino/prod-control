@@ -20,6 +20,12 @@ module.exports = {
     //   callback();
     // },
     function ({ request }, callback) {
+      if (request.includes('../config.json')) {
+        return callback(null, 'commonjs ' + './config.json');
+      }
+      callback();
+    },
+    function ({ request }, callback) {
       if (request.includes('./config.json')) {
         return callback(null, 'commonjs ' + request);
       }

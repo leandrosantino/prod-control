@@ -6,6 +6,7 @@ import { Record } from './pages/record'
 import { TagGenerator } from './pages/tagGenerator/'
 import { NotFound } from './pages/404'
 import { RegisterTag } from './pages/registerTag'
+import { Report } from './pages/report'
 
 export default function AppRoutes() {
     return (
@@ -18,6 +19,7 @@ export default function AppRoutes() {
                 <Route path='/products/edit/:id' Component={EditPorducts} />
                 <Route path='/products/edit' Component={EditPorducts} />
                 <Route path='/record' Component={Record} />
+                <Route path='/report' Component={Report} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

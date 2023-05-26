@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../database/client'
+import { PrismaClient } from '@prisma/client'
 import xlsx from 'node-xlsx'
 import fs from 'fs'
 import path from 'path'

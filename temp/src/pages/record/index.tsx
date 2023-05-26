@@ -22,6 +22,7 @@ export function Record() {
   const [classification, setClassification] = useState('')
   const [ute, setUte] = useState('')
   const [date, setDate] = useState('')
+  const [identification, setIdentification] = useState('')
 
   const dialog = useDialog()
 
@@ -46,7 +47,7 @@ export function Record() {
     sentinel && intersectionObserver.observe(sentinel)
     return () => intersectionObserver.disconnect()
 
-  }, [description, technicalDescription, classification, ute, date, isAuth])
+  }, [description, technicalDescription, classification, ute, date, isAuth, identification])
 
 
   useEffect(() => {
@@ -76,7 +77,8 @@ export function Record() {
       const apiResponse = await api.get('/productionRecord', {
         params: {
           cursor: cursor.current, page: page.current,
-          description, technicalDescription, classification, ute, date
+          description, technicalDescription, classification, ute, date,
+          id: identification,
         }
       })
       return z.array(productionRecordSchema).parse(apiResponse.data)
@@ -177,6 +179,12 @@ export function Record() {
               <Filters>
 
                 <InputSearch
+                  label='Identificação'
+                  value={identification}
+                  onChange={setIdentification}
+                />
+
+                <InputSearch
                   label='Descrição Operacional:'
                   value={description}
                   onChange={setDescription}
@@ -246,7 +254,7 @@ export function Record() {
                         <td>{entry.id}</td>
                         <td>{entry.product.description}</td>
                         <td>{entry.product.technicalDescription}</td>
-                        <td>{entry.createdAt.toLocaleString()}</td>
+                        <td>{new Date(entry.createdAt).toLocaleString()}</td>
                         <td>{entry.product.ute}</td>
                         <td>{entry.product.classification}</td>
                         <td>{entry.amount}</td>

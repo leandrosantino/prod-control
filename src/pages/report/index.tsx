@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useDialog } from "../../hooks/useDialog";
 import { api } from "../../services/api";
 import fileDownload from 'js-file-download'
+import { dateStringToObj } from "../../utils/dateTools";
 
 export function Report() {
 
@@ -36,7 +37,10 @@ export function Report() {
 
         if (!response.data.error) {
 
-          fileDownload(response.data, 'report.xlsx')
+          const fromObj = dateStringToObj(from)
+          const toObj = dateStringToObj(to)
+
+          fileDownload(response.data, `Relatório de Produção (${fromObj.day}_${fromObj.month}_${fromObj.year})-(${toObj.day}_${toObj.month}_${toObj.year}).xlsx`)
           console.log(response)
 
           dialog.alert({

@@ -3,5 +3,6 @@
   "report_path": "D:/Dev",
   "enable_qrcode_scan": true,
   "isDev": true,
-  "admin_pass": "GPT4598"
+  "admin_pass": "GPT4598",
+  "save_report": false
 }

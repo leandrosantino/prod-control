@@ -25,8 +25,13 @@ export async function reportsRoutes(server: FastifyInstance) {
         }
       })
 
+      const fileName =
+        `Relatório de Produção (${from.day}_${from.month}_${from.year})-(${to.day}_${to.month}_${to.year})`
 
-      const worksheet = createWorksheetBuffer(z.array(productionRecordSchema).parse(reports))
+      const worksheet = createWorksheetBuffer(
+        z.array(productionRecordSchema).parse(reports),
+        `${fileName}.xlsx`
+      )
 
       return reply.send(worksheet).type('application/xls').code(200)
 

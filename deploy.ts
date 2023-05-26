@@ -21,12 +21,9 @@ const paterns = {
   dir: [
     { from: path.join(__dirname, 'build'), to: path.join(output, 'build') },
     { from: path.join(__dirname, 'prisma'), to: path.resolve(output, 'prisma') },
-    // { from: path.join(__dirname, 'database', 'client'), to: path.join(output, 'database', 'client') },
   ],
   file: [
     { from: path.join(__dirname, 'build/index.js',), to: path.join(output, 'build/index.js') },
-    // { from: path.join(__dirname, 'prisma/update.ts',), to: path.join(output, 'update.ts') },
-    { from: path.join(__dirname, '.env',), to: path.join(output, '.env') },
   ]
 };
 
@@ -41,7 +38,6 @@ const paterns = {
   mkdir(output)
   mkdir(path.join(output, 'build'))
 
-
   await copyDir(paterns.dir[0].from, paterns.dir[0].to)
 
   await shell('npm run server.build')
@@ -51,7 +47,6 @@ const paterns = {
   }
 
   await copyDir(paterns.dir[1].from, paterns.dir[1].to)
-  // await copyDir(paterns.dir[2].from, paterns.dir[2].to)
 
   createPackageJson()
   createConfgJson()

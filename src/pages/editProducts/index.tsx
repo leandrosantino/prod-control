@@ -88,6 +88,7 @@ export function EditPorducts() {
                 }).parse(authResp.data)
 
                 if (isAuth) {
+                  console.log(id)
                   const apiResponse = await api.post<{
                     error: boolean,
                     msg: string

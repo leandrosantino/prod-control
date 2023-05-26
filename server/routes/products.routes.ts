@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../services/prisma'
-import { productFiltersSchema, productSchema } from '../utils/schemas'
+import { productFiltersSchema, productCreateSchema } from '../utils/schemas'
 
 
 
@@ -42,9 +42,10 @@ export async function productsRoutes(server: FastifyInstance) {
 
   server.post('/api/products/edit', async (request, reply) => {
     try {
+
       const product = z.object({
         id: z.string(),
-        data: productSchema
+        data: productCreateSchema
       }).parse(request.body)
 
 
@@ -71,7 +72,7 @@ export async function productsRoutes(server: FastifyInstance) {
 
   server.post('/api/products/create', async (request, reply) => {
     try {
-      const product = productSchema.parse(request.body)
+      const product = productCreateSchema.parse(request.body)
 
       await prisma.product.create({
         data: product

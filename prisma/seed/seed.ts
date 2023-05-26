@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { z } from 'zod'
 import { createId as cuid } from '@paralleldrive/cuid2'
+import { productBackup } from './productBackup'
 
 const prisma = new PrismaClient();
 
@@ -68,6 +69,8 @@ type Product = z.input<typeof productSchema>
         console.log(`Error => ${product.description} -- ${error}`)
       }
     }
+
+    await productBackup()
 
   } catch (error) {
     console.log(error)

@@ -50,7 +50,6 @@ export function RegisterTag() {
       const qrcodeValue = qrCodeInfoSchema.parse(JSON.parse(code))
       const fractional = qrcodeValue?.amount ? false : true
 
-      setQrCodeSatate(qrcodeValue)
       setIsFraction(fractional)
 
       if (fractional) {
@@ -65,6 +64,11 @@ export function RegisterTag() {
           const productData = productSchema.parse(
             (await api.get(`/product/${qrcodeValue.productId}`)).data
           )
+
+          if (qrcodeValue.amount) { qrcodeValue.amount = productData.amount }
+
+          setQrCodeSatate(qrcodeValue)
+
           setProduct(productData)
 
           if (productData && !fractional) {
@@ -115,6 +119,7 @@ export function RegisterTag() {
           })
         }, 3000)
         setIsFraction(false)
+
         return
       }
 
@@ -123,6 +128,14 @@ export function RegisterTag() {
         message: msg,
         error: !success
       })
+
+      setStatus({
+        msg: '',
+        error: false
+      })
+      setIsFraction(false)
+      setQrCodeSatate({} as QrCodeInfo)
+      setProduct({} as Product)
 
 
     } catch (error) {
@@ -236,6 +249,7 @@ export function RegisterTag() {
                 required
                 disabled={!isFraction}
                 type="number"
+                min={1}
               />
 
             </InputContent>

@@ -39,3 +39,13 @@ export const productionRecordSchema = z.object({
 
 
 export type ProductionRecord = z.infer<typeof productionRecordSchema>
+
+
+export const qrCodeInfoSchema = z.object({
+  productId: z.string(),
+  tagId: z.string(),
+  amount: z.number(),
+})
+
+
+export type QrCodeInfo = z.infer<typeof qrCodeInfoSchema>

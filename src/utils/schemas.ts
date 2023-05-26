@@ -44,7 +44,7 @@ export type ProductionRecord = z.infer<typeof productionRecordSchema>
 export const qrCodeInfoSchema = z.object({
   productId: z.string(),
   tagId: z.string(),
-  amount: z.number(),
+  amount: z.number().optional(),
 })
 
 
