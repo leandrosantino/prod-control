@@ -30,34 +30,11 @@ export function TagGenerator() {
 
   function handleSetFractional() {
     if (!isFractional) {
-      dialog.prompt({
-        title: 'Autenticação',
-        message: 'Insira a senha para prosseguir',
-        type: 'password',
-        async accept(value) {
-          try {
-            const authResp = await api.get('/auth', {
-              params: {
-                password: value
-              }
-            })
-            const { isAuth } = z.object({
-              isAuth: z.boolean()
-            }).parse(authResp.data)
-
-            if (isAuth) {
-              setIsFractional(state => !state)
-              return
-            }
-
-            dialog.alert({
-              title: 'Erro!',
-              message: 'Senha inválida',
-              error: true
-            })
-
-          } catch { }
-
+      dialog.question({
+        title: 'Atenção!',
+        message: 'Realmente deseja gerar etiquetas fracionadas?',
+        async accept() {
+          setIsFractional(state => !state)
         },
         refuse() { },
       })
